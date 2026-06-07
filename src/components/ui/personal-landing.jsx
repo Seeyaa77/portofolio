@@ -5,7 +5,7 @@ const HeroSection = () => {
   return (
     <section className="w-full flex flex-col items-center text-center gap-6">
       <div className="relative mb-2">
-        <span className="absolute inset-0 rounded-full bg-gradient-to-tr from-zinc-500 via-white to-zinc-400 opacity-30 blur-lg animate-pulse" />
+        <span className="absolute inset-0 rounded-full blur-xl profile-lightning-glow" />
         <img
           src="https://images.unsplash.com/photo-1618477388954-7852f32655ec?auto=format&fit=crop&q=80&w=256&h=256"
           alt="Muhammad Raffli Aldiansyah"

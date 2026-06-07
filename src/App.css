@@ -18,14 +18,86 @@
   left: 0;
   right: 0;
   z-index: 100;
-  transition: all 0.3s ease;
+  border-bottom: 1px solid transparent;
+  transition: background-color 0.3s ease, border-color 0.3s ease, box-shadow 0.3s ease;
+  transform: translate3d(0, 0, 0);
+  -webkit-backface-visibility: hidden;
+  backface-visibility: hidden;
+  will-change: transform, background-color, border-color;
 }
 
 .navbar-scrolled {
   background: rgba(0, 0, 0, 0.9);
   backdrop-filter: blur(10px);
-  border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+  border-color: rgba(255, 255, 255, 0.05);
+  box-shadow: 0 4px 30px rgba(0, 0, 0, 0.15);
 }
+
+/* ===== PROFILE LIGHTNING GLOW ===== */
+.profile-lightning-glow {
+  animation: lightning-flicker 4s linear infinite;
+  opacity: 0.7;
+}
+
+@keyframes lightning-flicker {
+  0%, 100% {
+    opacity: 0.25;
+    filter: drop-shadow(0 0 15px rgba(0, 240, 255, 0.4)) blur(16px);
+    background: linear-gradient(135deg, #00f0ff, #0066ff);
+  }
+  5% {
+    opacity: 0.85;
+    filter: drop-shadow(0 0 35px rgba(0, 240, 255, 0.9)) blur(12px);
+    background: linear-gradient(135deg, #00f0ff, #00d2ff);
+  }
+  5.5% {
+    opacity: 0.4;
+    filter: drop-shadow(0 0 20px rgba(0, 240, 255, 0.5)) blur(14px);
+  }
+  6% {
+    opacity: 0.95;
+    filter: drop-shadow(0 0 45px rgba(0, 102, 255, 1)) blur(10px);
+    background: linear-gradient(135deg, #ffffff, #00f0ff);
+  }
+  6.5% {
+    opacity: 0.3;
+    filter: drop-shadow(0 0 15px rgba(0, 240, 255, 0.3)) blur(16px);
+  }
+  12% {
+    opacity: 0.3;
+  }
+  12.5% {
+    opacity: 0.9;
+    filter: drop-shadow(0 0 30px rgba(0, 240, 255, 0.8)) blur(12px);
+  }
+  13% {
+    opacity: 0.4;
+  }
+  40% {
+    opacity: 0.3;
+    filter: drop-shadow(0 0 15px rgba(0, 240, 255, 0.3)) blur(16px);
+  }
+  40.5% {
+    opacity: 0.9;
+    filter: drop-shadow(0 0 35px rgba(0, 240, 255, 0.85)) blur(10px);
+    background: linear-gradient(135deg, #00f0ff, #0066ff);
+  }
+  41% {
+    opacity: 0.35;
+    filter: drop-shadow(0 0 15px rgba(0, 240, 255, 0.3)) blur(16px);
+  }
+  70% {
+    opacity: 0.25;
+  }
+  70.5% {
+    opacity: 0.8;
+    filter: drop-shadow(0 0 30px rgba(0, 240, 255, 0.75)) blur(12px);
+  }
+  71.5% {
+    opacity: 0.3;
+  }
+}
+
 
 .navbar-container {
   max-width: 1200px;
