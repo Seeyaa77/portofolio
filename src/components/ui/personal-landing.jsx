@@ -1,4 +1,4 @@
-import React, { useRef, useState } from "react";
+import React from "react";
 import { twMerge } from "tailwind-merge";
 import {
   Github,
@@ -85,94 +85,9 @@ const AboutBlock = () => (
   </div>
 );
 
-const ConnectSection = () => {
-  const [message, setMessage] = useState("");
-  const [showToast, setShowToast] = useState(false);
-  const [error, setError] = useState("");
-  const inputRef = useRef(null);
-
-  const validateMessage = (msg) => {
-    if (!msg.trim()) return "Message cannot be empty.";
-    if (msg.trim().length < 3) return "Message must be at least 3 characters.";
-    if (msg.length > 200) return "Message cannot exceed 200 characters.";
-    return "";
-  };
-
-  const handleSend = (e) => {
-    e.preventDefault();
-    const validationError = validateMessage(message);
-    if (validationError) {
-      setError(validationError);
-      return;
-    }
-    setShowToast(true);
-    setMessage("");
-    setError("");
-    if (inputRef.current) inputRef.current.blur();
-    setTimeout(() => setShowToast(false), 2000);
-  };
-
-  const handleInputChange = (e) => {
-    setMessage(e.target.value);
-    if (error) setError("");
-  };
-
-  return (
-    <section className="w-full flex flex-col items-center text-center gap-4 mt-8 relative" style={{ fontFamily: "'Inter', system-ui, sans-serif" }}>
-      {/* Toast Notification */}
-      {showToast && (
-        <div className="fixed top-6 right-6 z-50 bg-zinc-100 text-zinc-900 px-6 py-3 rounded-xl shadow-lg font-semibold text-base animate-fade-in">
-          Message sent!
-        </div>
-      )}
-      <p className="text-lg text-zinc-500 mb-4 max-w-md mx-auto font-normal">
-        Interested in collaborating, chatting about tech, or just saying hi? Send me a message below!
-      </p>
-      <form onSubmit={handleSend} className="flex w-full max-w-md gap-2 items-center justify-center">
-        <input
-          ref={inputRef}
-          type="text"
-          value={message}
-          onChange={handleInputChange}
-          placeholder="Type your message..."
-          className={twMerge(
-            "flex-1 rounded-full border px-5 py-3 text-base text-zinc-100 placeholder-zinc-600 transition-colors focus:outline-none shadow",
-            error ? "border-red-500 focus:border-red-500" : "border-zinc-700 bg-zinc-900 focus:border-zinc-400"
-          )}
-          style={{ fontFamily: "'Inter', system-ui, sans-serif" }}
-          maxLength={201}
-        />
-        <button
-          type="submit"
-          className={twMerge(
-            "inline-flex items-center gap-2 rounded-full bg-white px-7 py-3 text-base font-semibold text-zinc-900 shadow-lg focus:outline-none focus:ring-2 focus:ring-zinc-400 transition-all",
-            message.trim() ? "hover:scale-105 hover:shadow-xl cursor-pointer opacity-100" : "opacity-50 cursor-not-allowed"
-          )}
-          disabled={!message.trim()}
-          aria-disabled={!message.trim()}
-        >
-          Send
-        </button>
-      </form>
-      {error && (
-        <div className="text-red-400 text-sm mt-1 font-medium">{error}</div>
-      )}
-      <style>{`
-        .animate-fade-in {
-          animation: fadeIn 0.3s ease;
-        }
-        @keyframes fadeIn {
-          from { opacity: 0; transform: translateY(-10px); }
-          to { opacity: 1; transform: translateY(0); }
-        }
-      `}</style>
-    </section>
-  );
-};
-
 export const PersonalLanding = () => {
   return (
-    <div className="min-h-screen w-full flex items-center justify-center bg-gradient-to-br from-zinc-900 via-zinc-950 to-zinc-900 px-4 py-16 text-zinc-50 relative overflow-hidden" style={{ fontFamily: "'Inter', system-ui, sans-serif" }}>
+    <div className="min-h-screen w-full flex items-center justify-center bg-gradient-to-br from-zinc-900 via-zinc-950 to-zinc-900 px-4 pt-28 pb-16 text-zinc-50 relative overflow-hidden" style={{ fontFamily: "'Inter', system-ui, sans-serif" }}>
       {/* Animated background glow */}
       <div className="absolute -top-32 -left-32 w-[500px] h-[500px] bg-gradient-to-tr from-zinc-700 via-zinc-500 to-zinc-800 opacity-10 rounded-full blur-3xl animate-pulse z-0" />
       <div className="absolute -bottom-48 -right-48 w-[400px] h-[400px] bg-gradient-to-bl from-zinc-600 via-zinc-800 to-zinc-900 opacity-10 rounded-full blur-3xl animate-pulse z-0" style={{ animationDelay: '1s' }} />
@@ -180,7 +95,6 @@ export const PersonalLanding = () => {
         <HeroSection />
         <AboutBlock />
         <SocialsBlock />
-        <ConnectSection />
       </div>
     </div>
   );
