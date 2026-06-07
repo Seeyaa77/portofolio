@@ -1,5 +1,6 @@
 import { useState, useEffect } from 'react'
 import { motion, AnimatePresence } from 'framer-motion'
+import { PersonalLanding } from './components/ui/personal-landing'
 import { 
   Github, 
   Linkedin, 
@@ -748,7 +749,7 @@ function App() {
       </AnimatePresence>
 
       <Navbar />
-      <Hero />
+      <PersonalLanding />
       <div className="divider"></div>
       <About />
       <Skills />

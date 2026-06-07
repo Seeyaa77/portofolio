@@ -3,7 +3,7 @@
 @import "tailwindcss";
 
 @source "../index.html";
-@source "./**/*.{js,jsx}";
+@source "./**/*.{js,jsx,ts,tsx}";
 
 @theme {
   --font-sans: 'Inter', system-ui, sans-serif;
