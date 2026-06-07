@@ -10,7 +10,9 @@ import {
   ChevronDown,
   Menu,
   X,
-  ArrowUpRight
+  ArrowUpRight,
+  Lock,
+  ExternalLink
 } from 'lucide-react'
 import './App.css'
 
@@ -332,34 +334,244 @@ function Skills() {
   )
 }
 
+// Linux CLI Boot Screen Component
+// Linux CLI Boot Screen Component
+function BootScreen({ onComplete }) {
+  const [logs, setLogs] = useState([])
+  const [currentLine, setCurrentLine] = useState(-1) // Start at -1, meaning typing is in progress
+  const [typedCommand, setTypedCommand] = useState("")
+  const [showCursor, setShowCursor] = useState(true)
+  const [progress, setProgress] = useState(0)
+
+  const command = "./init_portfolio.sh --verbose --production"
+  
+  const logSequence = [
+    { text: "[   0.000000] Linux version 5.15.0-76-generic (raffli@dev-host)", delay: 50 },
+    { text: "[   0.041029] CPU0: Intel(R) Core(TM) i7-10700K CPU @ 3.80GHz", delay: 50 },
+    { text: "[   0.124930] Command line options: initrd=initrd.img root=/dev/sda1 ro", delay: 50 },
+    { text: "[ INFO ] Initializing portfolio boot sequence...", delay: 100 },
+    { text: "[ OK ] Core runtime detected: React v19.2.0, Vite v7.2.5", delay: 80 },
+    { text: "[ OK ] Dynamic styling engine initialized: Tailwind CSS v4", delay: 50 },
+    { text: "[ OK ] Animation controllers active: Framer Motion v12", delay: 80 },
+    { text: "[ INFO ] Connecting to GitHub REST API...", delay: 100 },
+    { text: "[ OK ] Syncing repository: 'Spotify-Downloader' (https://github.com/Seeyaa77/Spotify-Downloader)", delay: 80 },
+    { text: "[ OK ] Repo target: spotydl.net [Online]", delay: 50 },
+    { text: "[ OK ] Syncing repository: 'Aura-AI' (https://github.com/Seeyaa77/Aura-AI)", delay: 80 },
+    { text: "[ OK ] Repo target: aura-ai-six-alpha.vercel.app [Online]", delay: 50 },
+    { text: "[ OK ] Syncing repository: 'dracin-bot' [Private Access Approved]", delay: 80 },
+    { text: "[ OK ] Syncing repository: 'portofolio' (https://github.com/Seeyaa77/portofolio)", delay: 50 },
+    { text: "[ INFO ] Allocating resources & compiling responsive stylesheets...", delay: 120 },
+    { text: "[ OK ] Custom 3D Tilt motiongraphy drivers loaded.", delay: 80 },
+    { text: "[ OK ] Glassmorphism UI tokens successfully mapped.", delay: 50 },
+    { text: "[ SUCCESS ] Web-shell terminal execution finished.", delay: 100 },
+    { text: "[ READY ] Systems operational. Redirecting to Graphical Interface...", delay: 150 }
+  ]
+
+  // Cursor blinking
+  useEffect(() => {
+    const interval = setInterval(() => {
+      setShowCursor(prev => !prev)
+    }, 450)
+    return () => clearInterval(interval)
+  }, [])
+
+  // Typing effect - character by character slicing
+  useEffect(() => {
+    if (typedCommand.length < command.length) {
+      const timeout = setTimeout(() => {
+        setTypedCommand(command.slice(0, typedCommand.length + 1))
+      }, 25) // typing speed
+      return () => clearTimeout(timeout)
+    } else {
+      // Start printing logs after a small delay once typing is finished
+      const timeout = setTimeout(() => {
+        setCurrentLine(0)
+      }, 150)
+      return () => clearTimeout(timeout)
+    }
+  }, [typedCommand])
+
+  // Sequential log printer
+  useEffect(() => {
+    if (currentLine === -1 || currentLine >= logSequence.length) return
+
+    const currentLog = logSequence[currentLine]
+    const timeout = setTimeout(() => {
+      setLogs(prev => [...prev, currentLog.text])
+      setProgress(Math.round(((currentLine + 1) / logSequence.length) * 100))
+      setCurrentLine(prev => prev + 1)
+    }, currentLog.delay)
+
+    return () => clearTimeout(timeout)
+  }, [currentLine])
+
+  // Instant trigger to close once completed
+  useEffect(() => {
+    if (currentLine === logSequence.length) {
+      // Delay 100ms so the user sees the progress bar hit 100% and then immediately close
+      const timeout = setTimeout(() => {
+        onComplete()
+      }, 100)
+      return () => clearTimeout(timeout)
+    }
+  }, [currentLine, onComplete])
+
+  // Skip keyboard listener
+  useEffect(() => {
+    const handleKeyDown = () => {
+      onComplete()
+    }
+    window.addEventListener("keydown", handleKeyDown)
+    return () => window.removeEventListener("keydown", handleKeyDown)
+  }, [onComplete])
+
+  return (
+    <div className="boot-screen">
+      <div className="boot-terminal">
+        <div className="terminal-header">
+          <div className="terminal-dot red"></div>
+          <div className="terminal-dot yellow"></div>
+          <div className="terminal-dot green"></div>
+          <span className="terminal-title">guest@raffli-dev: ~</span>
+        </div>
+        <div className="terminal-body">
+          <div className="terminal-line">
+            <span className="terminal-prompt">guest@raffli-dev:~$</span>{" "}
+            <span className="terminal-input">{typedCommand}</span>
+            {typedCommand.length < command.length && showCursor && <span className="terminal-cursor">|</span>}
+          </div>
+
+          {logs.map((log, index) => {
+            let logClass = "text-grey"
+            if (log.includes("[ SUCCESS ]") || log.includes("[ READY ]")) {
+              logClass = "text-green"
+            } else if (log.includes("[ OK ]")) {
+              logClass = "text-cyan"
+            } else if (log.includes("[ INFO ]")) {
+              logClass = "text-white"
+            }
+            return (
+              <div key={index} className={`terminal-log ${logClass}`}>
+                {log}
+              </div>
+            )
+          })}
+
+          {currentLine >= logSequence.length && (
+            <div className="terminal-line text-green animate-pulse" style={{ marginTop: '10px' }}>
+              [ READY ] Boot complete. Redirecting...
+            </div>
+          )}
+        </div>
+        
+        <div className="terminal-progress-container">
+          <div className="terminal-progress-track">
+            <div className="terminal-progress-bar" style={{ width: `${progress}%` }}></div>
+          </div>
+          <span className="terminal-progress-text">{progress}%</span>
+        </div>
+      </div>
+      
+      <button className="boot-skip-btn" onClick={onComplete}>
+        Skip Intro ➜
+      </button>
+    </div>
+  )
+}
+
+// 3D Tilt Card Component
+function TiltCard({ children }) {
+  const [rotateX, setRotateX] = useState(0)
+  const [rotateY, setRotateY] = useState(0)
+  const [scale, setScale] = useState(1)
+  const [glowX, setGlowX] = useState(50)
+  const [glowY, setGlowY] = useState(50)
+
+  const handleMouseMove = (e) => {
+    const card = e.currentTarget
+    const rect = card.getBoundingClientRect()
+    const x = e.clientX - rect.left
+    const y = e.clientY - rect.top
+    
+    const xc = rect.width / 2
+    const yc = rect.height / 2
+    const px = (x - xc) / xc
+    const py = (y - yc) / yc
+
+    const maxTilt = 8 // Subtle but noticeable 3D tilt
+    setRotateX(-py * maxTilt)
+    setRotateY(px * maxTilt)
+    setScale(1.02)
+    
+    setGlowX((x / rect.width) * 100)
+    setGlowY((y / rect.height) * 100)
+  }
+
+  const handleMouseLeave = () => {
+    setRotateX(0)
+    setRotateY(0)
+    setScale(1)
+  }
+
+  return (
+    <motion.div
+      onMouseMove={handleMouseMove}
+      onMouseLeave={handleMouseLeave}
+      style={{
+        transformStyle: 'preserve-3d',
+        perspective: 1000,
+        height: '100%'
+      }}
+      animate={{
+        rotateX: rotateX,
+        rotateY: rotateY,
+        scale: scale,
+      }}
+      transition={{ type: 'spring', stiffness: 200, damping: 15 }}
+      className="project-card-wrapper"
+    >
+      {children}
+      <div 
+        className="card-glare" 
+        style={{
+          background: `radial-gradient(circle at ${glowX}% ${glowY}%, rgba(255, 255, 255, 0.06) 0%, transparent 60%)`
+        }}
+      />
+    </motion.div>
+  )
+}
+
 // Projects Section
 function Projects() {
   const projects = [
     {
-      title: "Zoom Auto Payment",
-      description: "Enterprise-grade payment automation system with intelligent retry logic, real-time notifications, and comprehensive transaction logging.",
-      tech: ["Python", "Selenium", "REST API"],
+      title: "Spotify Downloader",
+      description: "Sleek and automated web tool to download Spotify playlists, albums, and tracks with high-fidelity meta-tagging and cover art retrieval.",
+      tech: ["Node.js", "Vite", "Spotify API", "Tailwind CSS"],
+      repo: "https://github.com/Seeyaa77/Spotify-Downloader",
+      live: "https://spotydl.net/"
     },
     {
-      title: "Spotify Auto Register",
-      description: "Scalable registration automation engine featuring smart proxy rotation, CAPTCHA solving integration, and rate limit handling.",
-      tech: ["Node.js", "Puppeteer", "Proxy Pool"],
+      title: "Aura AI",
+      description: "Premium monochromatic AI chatbot UI built with ChatGPT API, featuring context persistence, interactive message history, and custom layout.",
+      tech: ["React", "Express", "OpenAI API", "Framer Motion"],
+      repo: "https://github.com/Seeyaa77/Aura-AI",
+      live: "https://aura-ai-six-alpha.vercel.app/"
     },
     {
-      title: "QRIS Payment Gateway",
-      description: "Full-stack QRIS payment solution with real-time webhook callbacks, transaction reconciliation, and merchant dashboard.",
-      tech: ["Node.js", "Express", "PostgreSQL"],
+      title: "Dracin Bot",
+      description: "High-performance Telegram automated bot for fetching, indexing, and downloading/streaming Chinese dramas (Dracin) with custom search.",
+      tech: ["Python", "Scrapy", "Telegram API", "MongoDB"],
+      repo: null, // Private repo
+      live: null
     },
     {
-      title: "Edu Domain Validator",
-      description: "High-throughput email verification system with concurrent processing, detailed analytics, and export capabilities.",
-      tech: ["Python", "AsyncIO", "Threading"],
-    },
-    {
-      title: "Intelligent Web Scraper",
-      description: "Production-ready scraping framework with anti-detection measures, distributed architecture, and structured data pipelines.",
-      tech: ["Python", "Scrapy", "MongoDB"],
-    },
+      title: "Portfolio Site",
+      description: "This personal portfolio showcasing automation engineering, custom CLI animations, and premium web design aesthetics.",
+      tech: ["React", "Vite", "Framer Motion", "Tailwind CSS"],
+      repo: "https://github.com/Seeyaa77/portofolio",
+      live: "#"
+    }
   ]
 
   return (
@@ -375,24 +587,51 @@ function Projects() {
             <p className="section-label">Portfolio</p>
             <h2 className="section-title">Featured Work</h2>
             <p className="section-description">
-              Production-ready automation solutions that have processed thousands of 
-              transactions and saved countless hours of manual work.
+              Production-ready automation solutions and premium applications that are 
+              directly synced and live on GitHub.
             </p>
           </motion.div>
           
           <div className="projects-grid">
             {projects.map((project, index) => (
-              <motion.div key={index} variants={scaleIn} className="project-card">
-                <div className="project-header">
-                  <h3 className="project-title">{project.title}</h3>
-                  <ArrowUpRight size={18} className="project-arrow" />
-                </div>
-                <p className="project-description">{project.description}</p>
-                <div className="project-tags">
-                  {project.tech.map((tech, i) => (
-                    <span key={i} className="project-tag">{tech}</span>
-                  ))}
-                </div>
+              <motion.div key={index} variants={scaleIn} style={{ height: '100%' }}>
+                <TiltCard>
+                  <div className="project-card">
+                    <div>
+                      <div className="project-header">
+                        <h3 className="project-title">{project.title}</h3>
+                        <ArrowUpRight size={18} className="project-arrow" />
+                      </div>
+                      <p className="project-description">{project.description}</p>
+                      <div className="project-tags">
+                        {project.tech.map((tech, i) => (
+                          <span key={i} className="project-tag">{tech}</span>
+                        ))}
+                      </div>
+                    </div>
+                    
+                    <div className="project-badges">
+                      {project.repo ? (
+                        <a href={project.repo} target="_blank" rel="noopener noreferrer" className="project-badge-link">
+                          <Github size={12} />
+                          <span>Code</span>
+                        </a>
+                      ) : (
+                        <div className="project-badge-private">
+                          <Lock size={12} />
+                          <span>Private</span>
+                        </div>
+                      )}
+                      
+                      {project.live && project.live !== "#" && (
+                        <a href={project.live} target="_blank" rel="noopener noreferrer" className="project-badge-link">
+                          <ExternalLink size={12} />
+                          <span>Live</span>
+                        </a>
+                      )}
+                    </div>
+                  </div>
+                </TiltCard>
               </motion.div>
             ))}
           </div>
@@ -462,8 +701,36 @@ function Footer() {
 
 // Main App
 function App() {
+  const [isBooted, setIsBooted] = useState(() => {
+    if (typeof window !== 'undefined') {
+      return sessionStorage.getItem('portfolio_booted') === 'true'
+    }
+    return false
+  })
+
+  const handleBootComplete = () => {
+    setIsBooted(true)
+    if (typeof window !== 'undefined') {
+      sessionStorage.setItem('portfolio_booted', 'true')
+    }
+  }
+
   return (
     <div className="app">
+      <AnimatePresence mode="wait">
+        {!isBooted && (
+          <motion.div
+            key="bootscreen"
+            initial={{ opacity: 1 }}
+            exit={{ opacity: 0, y: -40 }}
+            transition={{ duration: 0.5, ease: "easeInOut" }}
+            style={{ position: 'fixed', inset: 0, zIndex: 99999 }}
+          >
+            <BootScreen onComplete={handleBootComplete} />
+          </motion.div>
+        )}
+      </AnimatePresence>
+
       <Navbar />
       <Hero />
       <div className="divider"></div>
