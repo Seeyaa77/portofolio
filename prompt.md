@@ -297,3 +297,46 @@ Langkah Integrasi:
 3. Ganti gambar avatar/placeholder dengan gambar valid dari Unsplash.
 ```
 
+---
+
+## ⚡ Prompt: Navbar Scroll Glitch Fix & Realistic Blue Lightning Profile Glow
+
+Gunakan prompt ini untuk menginstruksikan AI memperbaiki glitch garis putih pada navbar saat di-scroll dan mengubah animasi pendaran di belakang foto profil menjadi efek petir elektrik biru yang realistis:
+
+```markdown
+Role: Creative Frontend & CSS Performance Specialist
+Context: Saya ingin memperbaiki glitch visual berupa garis putih tipis/berkedip pada navbar ketika halaman di-scroll dan mengubah efek animasi glow di belakang foto profil/avatar menjadi efek petir elektrik berwarna biru yang realistis.
+
+Detail Perbaikan & Modifikasi:
+1. **Perbaikan Glitch Navbar (Scroll Bug)**:
+   - Lokasi: `.navbar-scrolled` di `src/App.css`.
+   - Masalah: Terjadi render artifact/garis glitch saat scrolling akibat kombinasi `backdrop-filter: blur(10px)` dengan border-bottom semi-transparan `rgba(255, 255, 255, 0.1)` ketika bertumpuk dengan elemen teranimasi di bawahnya.
+   - Solusi:
+     * Tambahkan properti akselerasi hardware GPU: `transform: translate3d(0, 0, 0);` dan `-webkit-backface-visibility: hidden;` ke kelas `.navbar`.
+     * Haluskan border-bottom dengan bayangan halus (misal: `box-shadow: 0 4px 30px rgba(0, 0, 0, 0.1); border-bottom: 1px solid rgba(255, 255, 255, 0.05);`).
+     * Pastikan `will-change: transform, background-color, border-color;` diatur di `.navbar` agar transisi render di layar berjalan lancar tanpa rendering delay.
+
+2. **Efek Petir Elektrik Biru Realistis (Realistic Blue Lightning Glow)**:
+   - Lokasi: Elemen avatar/wrapper profil di `src/components/ui/personal-landing.jsx`.
+   - Spesifikasi Visual:
+     * Ganti span gradien zinc/putih yang redup dengan span baru berwarna biru neon elektrik (`#00f0ff` dan `#0066ff`).
+     * Implementasikan animasi kustom `lightning-flicker` dan `electric-pulse` di CSS/Tailwind untuk meniru sambaran petir cepat yang tidak beraturan (flicker berfrekuensi tinggi dengan interval tidak rata, misalnya opacity berubah cepat dari 0.2 -> 0.9 -> 0.4 -> 1.0 -> 0.3).
+     * Tambahkan efek bayangan berlapis (drop-shadow/box-shadow biru elektrik) yang intensitas pendarannya ikut meredup/menyala sesuai irama flicker petir tersebut.
+     * Kode animasi keyframes petir (sebagai contoh):
+       ```css
+       @keyframes lightning-flicker {
+         0%, 100% { opacity: 0.25; filter: drop-shadow(0 0 15px rgba(0, 240, 255, 0.3)) blur(12px); }
+         5% { opacity: 0.85; filter: drop-shadow(0 0 30px rgba(0, 240, 255, 0.8)) blur(10px); }
+         5.5% { opacity: 0.4; filter: drop-shadow(0 0 20px rgba(0, 240, 255, 0.5)) blur(12px); }
+         6% { opacity: 0.95; filter: drop-shadow(0 0 40px rgba(0, 102, 255, 0.9)) blur(8px); }
+         6.5% { opacity: 0.3; filter: drop-shadow(0 0 15px rgba(0, 240, 255, 0.3)) blur(12px); }
+         40% { opacity: 0.3; filter: drop-shadow(0 0 15px rgba(0, 240, 255, 0.3)) blur(12px); }
+         40.5% { opacity: 0.9; filter: drop-shadow(0 0 35px rgba(0, 240, 255, 0.85)) blur(8px); }
+         41% { opacity: 0.35; filter: drop-shadow(0 0 15px rgba(0, 240, 255, 0.3)) blur(12px); }
+       }
+       ```
+
+Tugas: Perbaiki berkas CSS terkait dan perbarui elemen background profil pada `personal-landing.jsx` untuk mewujudkan efek visual ini secara mulus.
+```
+
+
