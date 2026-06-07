@@ -31,6 +31,16 @@ Fokus utama adalah membangun sistem otomatisasi tangguh yang memiliki ketahanan 
 
 ---
 
+## 🎨 Frontend Development
+
+Membangun antarmuka modern yang interaktif, responsif, dan berkinerja tinggi.
+
+* **Frameworks & Libraries**:
+  * **Next.js**: Framework React untuk production dengan optimasi rendering (SSR/ISR) dan performa tinggi.
+  * **React.js**: Library pembuatan komponen antarmuka deklaratif yang fleksibel dan efisien.
+
+---
+
 ## 🌐 Backend & API Development
 
 Membangun REST API dan sistem backend untuk mendukung arsitektur otomatisasi dan integrasi frontend.

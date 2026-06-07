@@ -12,7 +12,11 @@ import {
   X,
   ArrowUpRight,
   Lock,
-  ExternalLink
+  ExternalLink,
+  Music,
+  MessageSquare,
+  Bot,
+  Cpu
 } from 'lucide-react'
 import './App.css'
 
@@ -288,9 +292,9 @@ function Skills() {
       items: ["Python", "JavaScript", "TypeScript", "HTML/CSS"]
     },
     {
-      category: "Runtime & Frameworks",
+      category: "Frameworks & Runtimes",
       icon: <Terminal size={20} />,
-      items: ["Node.js", "Express.js", "Flask", "FastAPI"]
+      items: ["Next.js", "React.js", "Node.js", "Express.js", "Flask", "FastAPI"]
     },
     {
       category: "Automation",
@@ -549,28 +553,32 @@ function Projects() {
       description: "Sleek and automated web tool to download Spotify playlists, albums, and tracks with high-fidelity meta-tagging and cover art retrieval.",
       tech: ["Node.js", "Vite", "Spotify API", "Tailwind CSS"],
       repo: "https://github.com/Seeyaa77/Spotify-Downloader",
-      live: "https://spotydl.net/"
+      live: "https://spotydl.net/",
+      icon: <Music size={20} />
     },
     {
       title: "Aura AI",
       description: "Premium monochromatic AI chatbot UI built with ChatGPT API, featuring context persistence, interactive message history, and custom layout.",
       tech: ["React", "Express", "OpenAI API", "Framer Motion"],
       repo: "https://github.com/Seeyaa77/Aura-AI",
-      live: "https://aura-ai-six-alpha.vercel.app/"
+      live: "https://aura-ai-six-alpha.vercel.app/",
+      icon: <MessageSquare size={20} />
     },
     {
       title: "Dracin Bot",
       description: "High-performance Telegram automated bot for fetching, indexing, and downloading/streaming Chinese dramas (Dracin) with custom search.",
       tech: ["Python", "Scrapy", "Telegram API", "MongoDB"],
       repo: null, // Private repo
-      live: null
+      live: null,
+      icon: <Bot size={20} />
     },
     {
       title: "Portfolio Site",
       description: "This personal portfolio showcasing automation engineering, custom CLI animations, and premium web design aesthetics.",
       tech: ["React", "Vite", "Framer Motion", "Tailwind CSS"],
       repo: "https://github.com/Seeyaa77/portofolio",
-      live: "#"
+      live: "#",
+      icon: <Cpu size={20} />
     }
   ]
 
@@ -596,10 +604,15 @@ function Projects() {
             {projects.map((project, index) => (
               <motion.div key={index} variants={scaleIn} style={{ height: '100%' }}>
                 <TiltCard>
+                  <div className="project-card-bg"></div>
+                  <div className="project-card-glow"></div>
                   <div className="project-card">
                     <div>
                       <div className="project-header">
-                        <h3 className="project-title">{project.title}</h3>
+                        <div className="project-title-wrapper">
+                          <div className="project-icon-box">{project.icon}</div>
+                          <h3 className="project-title">{project.title}</h3>
+                        </div>
                         <ArrowUpRight size={18} className="project-arrow" />
                       </div>
                       <p className="project-description">{project.description}</p>
@@ -630,6 +643,9 @@ function Projects() {
                         </a>
                       )}
                     </div>
+                  </div>
+                  <div className="project-card-tech-brackets">
+                    {project.repo ? "[SYS.ONLINE]" : "[SYS.PRIVATE]"}
                   </div>
                 </TiltCard>
               </motion.div>
