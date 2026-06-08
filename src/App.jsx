@@ -184,6 +184,7 @@ function Counter({ value, duration = 2 }) {
   const [display, setDisplay] = useState("0")
   const ref = useRef(null)
   const hasStarted = useRef(false)
+  const animationFrameId = useRef(null)
 
   useEffect(() => {
     const observer = new IntersectionObserver(
@@ -194,10 +195,15 @@ function Counter({ value, duration = 2 }) {
           observer.disconnect()
         }
       },
-      { threshold: 0.3 }
+      { threshold: 0.1 }
     )
     if (ref.current) observer.observe(ref.current)
-    return () => observer.disconnect()
+    return () => {
+      observer.disconnect()
+      if (animationFrameId.current) {
+        cancelAnimationFrame(animationFrameId.current)
+      }
+    }
   }, [])
 
   const startCount = () => {
@@ -210,9 +216,11 @@ function Counter({ value, duration = 2 }) {
         const eased = 1 - Math.pow(1 - progress, 3) // ease-out cubic
         const current = Math.round(eased * 24)
         setDisplay(`${current}/7`)
-        if (progress < 1) requestAnimationFrame(animate)
+        if (progress < 1) {
+          animationFrameId.current = requestAnimationFrame(animate)
+        }
       }
-      requestAnimationFrame(animate)
+      animationFrameId.current = requestAnimationFrame(animate)
       return
     }
 
@@ -229,16 +237,18 @@ function Counter({ value, duration = 2 }) {
       const eased = 1 - Math.pow(1 - progress, 3)
       const current = Math.round(eased * target)
       setDisplay(`${current}${suffix}`)
-      if (progress < 1) requestAnimationFrame(animate)
+      if (progress < 1) {
+        animationFrameId.current = requestAnimationFrame(animate)
+      }
     }
-    requestAnimationFrame(animate)
+    animationFrameId.current = requestAnimationFrame(animate)
   }
 
   return <span ref={ref}>{display}</span>
 }
 
-// Organic Academic Tree — hand-drawn skeletal SVG (XXXTentacion / Poison Tree inspiration)
-function AcademicTree3D() {
+// Clean & Elegant Academic Timeline Component
+function AcademicTimeline() {
   const education = [
     { year: "2014 – 2020", school: "SDN 04 Pontianak Timur", status: "Completed", desc: "Pendidikan dasar di Pontianak Timur." },
     { year: "2020 – 2023", school: "SMPN 26 Pontianak Timur", status: "Completed", desc: "Sekolah menengah pertama, mulai mendalami komputer." },
@@ -246,164 +256,29 @@ function AcademicTree3D() {
     { year: "2026 – Present", school: "Bina Sarana Informatika", status: "On-Going", desc: "Studi di bidang Teknologi Informasi (sedang berlanjut)." },
   ]
 
-  const containerRef = useRef(null)
-  const [tiltX, setTiltX] = useState(0)
-  const [tiltY, setTiltY] = useState(0)
-  const [isMobile, setIsMobile] = useState(false)
-
-  useEffect(() => {
-    const check = () => setIsMobile(window.innerWidth < 768)
-    check()
-    window.addEventListener("resize", check)
-    return () => window.removeEventListener("resize", check)
-  }, [])
-
-  const handleMouseMove = (e) => {
-    if (!containerRef.current || isMobile) return
-    const rect = containerRef.current.getBoundingClientRect()
-    const cx = rect.left + rect.width / 2
-    const cy = rect.top + rect.height / 2
-    setTiltX(-((e.clientY - cy) / rect.height) * 10)
-    setTiltY(((e.clientX - cx) / rect.width) * 10)
-  }
-
-  const handleMouseLeave = () => { setTiltX(0); setTiltY(0) }
-
-  // Mobile fallback — clean vertical cards
-  if (isMobile) {
-    return (
-      <div className="academic-tree-mobile">
-        {education.map((edu, i) => (
-          <div key={i} className={`academic-mobile-card ${edu.status === 'On-Going' ? 'academic-mobile-active' : ''}`}>
-            <div className="academic-mobile-header">
-              <span className="academic-mobile-year">{edu.year}</span>
-              <span className={`academic-mobile-badge ${edu.status === 'On-Going' ? 'badge-active' : ''}`}>
-                {edu.status === 'On-Going' ? '⚡ On-Going' : '✓ Completed'}
-              </span>
-            </div>
-            <h3 className="academic-mobile-school">{edu.school}</h3>
-            <p className="academic-mobile-desc">{edu.desc}</p>
-          </div>
-        ))}
-      </div>
-    )
-  }
-
   return (
-    <div className="academic-tree-wrapper" style={{ perspective: "1000px" }}>
-      <motion.div
-        ref={containerRef}
-        onMouseMove={handleMouseMove}
-        onMouseLeave={handleMouseLeave}
-        className="academic-tree-container"
-        style={{ transformStyle: "preserve-3d" }}
-        animate={tiltX === 0 && tiltY === 0
-          ? { rotateY: [0, 2.5, -2.5, 0], rotateX: [0, 1, -1, 0] }
-          : { rotateX: tiltX, rotateY: tiltY }
-        }
-        transition={tiltX === 0 && tiltY === 0
-          ? { duration: 10, repeat: Infinity, ease: "easeInOut" }
-          : { type: "spring", stiffness: 150, damping: 20 }
-        }
-      >
-        {/* Grid overlay */}
-        <div className="academic-tree-grid" />
-
-        {/* Organic SVG tree */}
-        <div className="academic-tree-svg-wrap" style={{ transform: "translateZ(-30px)" }}>
-          <svg viewBox="0 0 500 700" className="academic-tree-svg" strokeLinecap="round" strokeLinejoin="round" fill="none">
-            {/* Roots — gnarly, spreading */}
-            <path d="M 250 665 C 235 680 200 695 165 698" stroke="rgba(255,255,255,0.12)" strokeWidth="4.5" />
-            <path d="M 250 665 C 240 675 220 688 195 692 C 180 695 168 690 155 695" stroke="rgba(255,255,255,0.08)" strokeWidth="3" />
-            <path d="M 250 665 C 265 680 290 692 320 696" stroke="rgba(255,255,255,0.12)" strokeWidth="4" />
-            <path d="M 250 665 C 260 678 285 690 310 695 C 325 698 340 692 350 697" stroke="rgba(255,255,255,0.07)" strokeWidth="2.5" />
-            <path d="M 250 665 C 248 680 252 692 250 700" stroke="rgba(255,255,255,0.09)" strokeWidth="3.5" />
-
-            {/* Trunk — thick, slightly winding, bark-like irregularity */}
-            <path d="M 250 665 C 248 640 253 615 249 585 C 246 555 254 530 251 500 C 249 475 252 450 250 420 C 248 395 253 370 250 340" stroke="rgba(255,255,255,0.18)" strokeWidth="7" />
-            {/* Bark texture lines */}
-            <path d="M 247 620 C 246 610 254 605 253 595" stroke="rgba(255,255,255,0.06)" strokeWidth="1.5" />
-            <path d="M 253 550 C 254 540 248 535 247 525" stroke="rgba(255,255,255,0.06)" strokeWidth="1.5" />
-            <path d="M 248 470 C 247 460 253 455 252 445" stroke="rgba(255,255,255,0.05)" strokeWidth="1.5" />
-
-            {/* ═══ Branch 1 (bottom-left) — SDN 04 ═══ */}
-            <path d="M 249 520 C 220 510 185 515 150 525 C 130 530 108 522 85 535 C 72 542 58 538 45 545" stroke="rgba(255,255,255,0.14)" strokeWidth="4" />
-            <path d="M 150 525 C 138 510 125 505 115 495" stroke="rgba(255,255,255,0.09)" strokeWidth="2.5" />
-            <path d="M 108 522 C 95 515 88 508 80 500" stroke="rgba(255,255,255,0.06)" strokeWidth="2" />
-
-            {/* ═══ Branch 2 (right-mid) — SMPN 26 ═══ */}
-            <path d="M 251 440 C 280 425 315 430 345 420 C 365 414 385 422 405 412 C 418 405 432 410 445 400" stroke="rgba(255,255,255,0.14)" strokeWidth="3.5" />
-            <path d="M 345 420 C 358 405 368 398 375 388" stroke="rgba(255,255,255,0.08)" strokeWidth="2.5" />
-            <path d="M 405 412 C 415 400 420 392 418 382" stroke="rgba(255,255,255,0.06)" strokeWidth="2" />
-
-            {/* ═══ Branch 3 (upper-left) — SMKN 7 ═══ */}
-            <path d="M 250 360 C 222 340 185 348 150 335 C 128 326 105 335 80 320 C 65 312 48 318 35 305" stroke="rgba(255,255,255,0.14)" strokeWidth="3.5" />
-            <path d="M 150 335 C 135 318 122 312 112 300" stroke="rgba(255,255,255,0.09)" strokeWidth="2.5" />
-            <path d="M 80 320 C 70 308 62 300 55 290" stroke="rgba(255,255,255,0.06)" strokeWidth="2" />
-
-            {/* ═══ Branch 4 (upper-right crown) — BSI ═══ */}
-            <path d="M 250 340 C 275 310 305 315 335 295 C 355 280 375 288 395 270 C 408 258 422 265 435 250" stroke="rgba(255,255,255,0.16)" strokeWidth="4" />
-            <path d="M 335 295 C 348 275 358 268 365 255" stroke="rgba(255,255,255,0.09)" strokeWidth="2.5" />
-            <path d="M 395 270 C 405 255 412 248 410 235" stroke="rgba(255,255,255,0.07)" strokeWidth="2" />
-
-            {/* Extra crown wisps */}
-            <path d="M 250 340 C 240 300 230 265 215 240 C 205 225 192 230 178 215" stroke="rgba(255,255,255,0.10)" strokeWidth="3" />
-            <path d="M 250 310 C 258 275 265 245 275 220 C 282 205 290 210 298 195" stroke="rgba(255,255,255,0.08)" strokeWidth="2.5" />
-            <path d="M 215 240 C 208 225 200 218 195 205" stroke="rgba(255,255,255,0.05)" strokeWidth="2" />
-            <path d="M 275 220 C 280 205 278 195 282 180" stroke="rgba(255,255,255,0.05)" strokeWidth="2" />
-          </svg>
-        </div>
-
-        {/* ═══ Floating milestone cards ═══ */}
-
-        {/* Card 1 — SDN 04 (bottom-left near branch 1) */}
-        <div className="academic-card academic-card-1" style={{ transform: "translateZ(35px)" }}>
-          <div className="academic-card-inner">
-            <div className="academic-card-top">
-              <span className="academic-card-year">{education[0].year}</span>
-              <span className="academic-card-badge">✓ Completed</span>
+    <div className="education-timeline">
+      {education.map((edu, index) => (
+        <motion.div 
+          key={index} 
+          variants={fadeInUp} 
+          className={`timeline-item ${index === education.length - 1 ? 'timeline-item-last' : ''}`}
+        >
+          <div className="timeline-line">
+            <div className={`timeline-node ${edu.status === 'On-Going' ? 'node-ongoing' : 'node-completed'}`}>
+              {edu.status === 'On-Going' ? '⚡' : '✓'}
             </div>
-            <h3 className="academic-card-school">{education[0].school}</h3>
-            <p className="academic-card-desc">{education[0].desc}</p>
           </div>
-        </div>
-
-        {/* Card 2 — SMPN 26 (right-mid near branch 2) */}
-        <div className="academic-card academic-card-2" style={{ transform: "translateZ(50px)" }}>
-          <div className="academic-card-inner">
-            <div className="academic-card-top">
-              <span className="academic-card-year">{education[1].year}</span>
-              <span className="academic-card-badge">✓ Completed</span>
-            </div>
-            <h3 className="academic-card-school">{education[1].school}</h3>
-            <p className="academic-card-desc">{education[1].desc}</p>
+          <div className={`timeline-content ${edu.status === 'On-Going' ? 'content-ongoing' : ''}`}>
+            <span className="timeline-year">{edu.year}</span>
+            <h3 className="timeline-school">{edu.school}</h3>
+            <p className="timeline-desc">{edu.desc}</p>
+            <span className={`timeline-status ${edu.status === 'On-Going' ? 'status-ongoing' : 'status-completed'}`}>
+              {edu.status}
+            </span>
           </div>
-        </div>
-
-        {/* Card 3 — SMKN 7 (upper-left near branch 3) */}
-        <div className="academic-card academic-card-3" style={{ transform: "translateZ(65px)" }}>
-          <div className="academic-card-inner">
-            <div className="academic-card-top">
-              <span className="academic-card-year">{education[2].year}</span>
-              <span className="academic-card-badge">✓ Completed</span>
-            </div>
-            <h3 className="academic-card-school">{education[2].school}</h3>
-            <p className="academic-card-desc">{education[2].desc}</p>
-          </div>
-        </div>
-
-        {/* Card 4 — BSI (top-right crown — active) */}
-        <div className="academic-card academic-card-4 academic-card-active" style={{ transform: "translateZ(80px)" }}>
-          <div className="academic-card-inner">
-            <div className="academic-card-top">
-              <span className="academic-card-year academic-card-year-active">{education[3].year}</span>
-              <span className="academic-card-badge academic-card-badge-active">⚡ On-Going</span>
-            </div>
-            <h3 className="academic-card-school">{education[3].school}</h3>
-            <p className="academic-card-desc">{education[3].desc}</p>
-          </div>
-        </div>
-      </motion.div>
+        </motion.div>
+      ))}
     </div>
   )
 }
@@ -480,7 +355,7 @@ function About() {
             <h2 className="section-title">Academic Journey</h2>
           </motion.div>
           
-          <AcademicTree3D />
+          <AcademicTimeline />
         </motion.div>
       </div>
     </section>

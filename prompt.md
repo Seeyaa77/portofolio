@@ -50,14 +50,19 @@ Context: I am polishing my personal portfolio website to match a highly premium,
   - Implement a React `Counter` component that triggers when scrolling into view (using `IntersectionObserver` or a custom Framer Motion utility).
   - The numbers must count up smoothly from `0` to the target number (`80`, `3`, `5`, `24`), retaining their suffixes (`+`, `/7`).
 
-### 3. Artistic Academic Tree (XXXTentacion "Tree of Life" / Poison Tree style)
-* **Critique**: The current 3D tree timeline looks overly structured, boxy, and "AI-generated" (like a simple vertical line with random SVG curves).
+### 3. Cybernetic Circuit-Trace Timeline Tree (Bespoke Minimalist Cyber-Lite Style)
+* **Critique**: The previous skeletal "poison tree" is too organic and messy, while a simple vertical line with dots looks basic, generic, and "AI-generated".
 * **Redesign**:
-  - Overhaul the "Academic Journey" timeline to look like an organic, hand-drawn tattoo of a leafless, skeletal dry tree (XXXTentacion style).
-  - Use custom, winding, irregular SVG path coordinates that twist and split naturally like branches, tapering as they rise. Avoid mechanical geometry.
-  - Place the 4 milestone cards (SDN 04, SMPN 26, SMKN 7, Universitas Bina Sarana Informatika) next to the branch tips.
+  - Overhaul the "Academic Journey" timeline to look like a premium, bespoke cybernetic circuit trace or data highway diagram.
+  - The trunk should be a clean, solid main highway path (e.g. dual parallel traces) that splits at precise 45-degree and 90-degree geometric angles into sub-traces connecting to each card, giving it a technical, engineering feel.
+  - Integrate technical details into the SVG, such as:
+    - Delicate, glowing dot-matrix grids or crosshairs flanking the intersections.
+    - Concentric, faint, pulsing telemetry rings around the active university node.
+    - Varying stroke opacities and dashes (`strokeDasharray`) to represent data packets or signals traversing the lines.
+  - Place the 4 milestone cards (SDN 04, SMPN 26, SMKN 7, Universitas Bina Sarana Informatika) in a clean, spaced layout.
   - Ensure the cards float in 3D perspective space (`perspective(1000px)`) and tilt smoothly in response to mouse movement with spring-like physics.
-  - The final node must display **Bina Sarana Informatika** with an active **On-Going (sedang berlanjut)** status indicator.
+  - The final node must display **Bina Sarana Informatika** with an active **On-Going (sedang berlanjut)** status indicator with a soft blue glowing pulse.
+  - Keep the design highly aesthetic, modern, and aligned with the monochromatic cyber-lite theme (using shades of zinc, white, and a single neon cyan-blue highlight).
   - **Mobile responsiveness**: Since absolute 3D placement is complex on mobile, fall back to a clean, highly aesthetic vertical list on screens smaller than 768px.
 
 ---
@@ -216,183 +221,38 @@ function Counter({ value, duration = 1.5 }) {
   return <span ref={ref}>{count || "0"}</span>
 }
 
-// 3D Academic Tree (inspired by XXXTentacion's tree)
-function AcademicTree3D() {
+// Clean & Elegant Academic Timeline Component
+function AcademicTimeline() {
   const education = [
-    { year: "2014 - 2020", school: "SDN 04 Pontianak Timur", status: "Completed", desc: "Pendidikan dasar di Pontianak Timur." },
-    { year: "2020 - 2023", school: "SMPN 26 Pontianak Timur", status: "Completed", desc: "Sekolah menengah pertama, mulai mendalami komputer." },
-    { year: "2023 - 2026", school: "SMKN 7 Pontianak Timur", status: "Completed", desc: "Sekolah Menengah Kejuruan dengan fokus Rekayasa Perangkat Lunak." },
-    { year: "2026 - Present", school: "Bina Sarana Informatika", status: "On-Going", desc: "Studi perguruan tinggi di bidang Teknologi Informasi (sedang berlanjut)." },
+    { year: "2014 – 2020", school: "SDN 04 Pontianak Timur", status: "Completed", desc: "Pendidikan dasar di Pontianak Timur." },
+    { year: "2020 – 2023", school: "SMPN 26 Pontianak Timur", status: "Completed", desc: "Sekolah menengah pertama, mulai mendalami komputer." },
+    { year: "2023 – 2026", school: "SMKN 7 Pontianak Timur", status: "Completed", desc: "SMK — fokus Rekayasa Perangkat Lunak." },
+    { year: "2026 – Present", school: "Bina Sarana Informatika", status: "On-Going", desc: "Studi di bidang Teknologi Informasi (sedang berlanjut)." },
   ]
 
-  const containerRef = useRef(null)
-  const [rotateX, setRotateX] = useState(0)
-  const [rotateY, setRotateY] = useState(0)
-  const [isMobile, setIsMobile] = useState(false)
-
-  useEffect(() => {
-    const handleResize = () => setIsMobile(window.innerWidth < 768)
-    handleResize()
-    window.addEventListener("resize", handleResize)
-    return () => window.removeEventListener("resize", handleResize)
-  }, [])
-
-  const handleMouseMove = (e) => {
-    if (!containerRef.current || isMobile) return
-    const rect = containerRef.current.getBoundingClientRect()
-    const width = rect.width
-    const height = rect.height
-    const mouseX = e.clientX - rect.left - width / 2
-    const mouseY = e.clientY - rect.top - height / 2
-    const rX = -(mouseY / height) * 15
-    const rY = (mouseX / width) * 15
-    setRotateX(rX)
-    setRotateY(rY)
-  }
-
-  const handleMouseLeave = () => {
-    setRotateX(0)
-    setRotateY(0)
-  }
-
-  if (isMobile) {
-    return (
-      <div className="w-full flex flex-col gap-6 px-4">
-        {education.map((edu, index) => (
-          <div 
-            key={index}
-            className={`w-full p-5 rounded-2xl border ${edu.status === 'On-Going' ? 'border-blue-900 bg-blue-950/20' : 'border-zinc-800 bg-zinc-950/60'} shadow-md`}
-          >
-            <div className="flex items-center justify-between mb-2">
-              <span className="text-xs font-mono text-zinc-500">{edu.year}</span>
-              <span className={`text-[10px] px-2 py-0.5 rounded-full ${edu.status === 'On-Going' ? 'border border-blue-900 bg-blue-950/50 text-blue-300' : 'border border-zinc-800 bg-zinc-900 text-zinc-400'}`}>
-                {edu.status === 'On-Going' ? '⚡ On-Going' : '✓ Completed'}
-              </span>
-            </div>
-            <h3 className="text-base font-bold text-white mb-1">{edu.school}</h3>
-            <p className="text-xs text-zinc-400 leading-relaxed">{edu.desc}</p>
-          </div>
-        ))}
-      </div>
-    )
-  }
-
   return (
-    <div 
-      className="relative w-full max-w-4xl mx-auto py-8 px-4 flex flex-col items-center justify-center select-none"
-      style={{ perspective: "1200px" }}
-    >
-      <motion.div
-        ref={containerRef}
-        onMouseMove={handleMouseMove}
-        onMouseLeave={handleMouseLeave}
-        style={{
-          transformStyle: "preserve-3d",
-          rotateX: rotateX,
-          rotateY: rotateY,
-        }}
-        animate={rotateX === 0 && rotateY === 0 ? {
-          rotateY: [0, 3, -3, 0],
-          rotateX: [0, 1.5, -1.5, 0]
-        } : {}}
-        transition={rotateX === 0 && rotateY === 0 ? {
-          duration: 8,
-          repeat: Infinity,
-          ease: "easeInOut"
-        } : { duration: 0.1 }}
-        className="relative w-full h-[650px] flex items-center justify-center border border-zinc-800/60 bg-zinc-950/40 rounded-3xl p-6 shadow-2xl backdrop-blur-sm overflow-hidden"
-      >
-        <div className="absolute inset-0 bg-[linear-gradient(rgba(255,255,255,0.01)_1px,transparent_1px),linear-gradient(90deg,rgba(255,255,255,0.01)_1px,transparent_1px)] bg-[size:30px_30px] opacity-40 pointer-events-none" />
-
-        {/* Central Dry Tree - XXXTentacion reference */}
-        <div 
-          className="absolute inset-0 flex items-center justify-center pointer-events-none"
-          style={{ transform: "translateZ(-20px)" }}
+    <div className="education-timeline">
+      {education.map((edu, index) => (
+        <motion.div 
+          key={index} 
+          variants={fadeInUp} 
+          className={`timeline-item ${index === education.length - 1 ? 'timeline-item-last' : ''}`}
         >
-          <svg 
-            viewBox="0 0 400 600" 
-            className="w-full h-full max-w-[450px] text-zinc-800 stroke-current fill-none opacity-85" 
-            strokeWidth="3.5" 
-            strokeLinecap="round"
-          >
-            <path d="M 200 560 C 190 575, 170 590, 150 595" strokeWidth="4" />
-            <path d="M 200 560 C 210 575, 230 590, 250 595" strokeWidth="4" />
-            <path d="M 200 560 C 200 585, 205 595, 210 600" strokeWidth="3" />
-            
-            <path d="M 200 560 L 200 480" strokeWidth="6" />
-            <path d="M 200 480 C 195 430, 205 380, 200 320" strokeWidth="5" />
-            
-            {/* Branch 1 */}
-            <path d="M 199 440 C 170 425, 140 435, 110 440 C 90 443, 75 435, 60 450" />
-            <path d="M 110 440 C 100 425, 90 420, 85 410" strokeWidth="2.5" />
-            
-            {/* Branch 2 */}
-            <path d="M 201 370 C 230 350, 260 360, 290 355 C 310 352, 325 365, 340 350" />
-            <path d="M 290 355 C 300 340, 310 335, 315 320" strokeWidth="2.5" />
-            
-            {/* Branch 3 */}
-            <path d="M 200 280 C 170 255, 140 265, 110 250 C 90 240, 75 250, 60 230" />
-            <path d="M 110 250 C 100 235, 90 230, 85 215" strokeWidth="2.5" />
-            
-            {/* Branch 4 */}
-            <path d="M 200 200 C 230 170, 260 180, 290 160 C 310 145, 325 155, 340 135" strokeWidth="4" />
-            <path d="M 290 160 C 300 145, 310 140, 315 125" strokeWidth="2.5" />
-            
-            <path d="M 200 200 C 190 150, 180 120, 160 100 C 150 90, 135 95, 120 80" strokeWidth="3.5" />
-            <path d="M 200 130 C 205 100, 210 70, 220 50" strokeWidth="2.5" />
-            <path d="M 180 120 C 182 95, 185 80, 175 65" strokeWidth="2" />
-          </svg>
-        </div>
-
-        {/* Floating cards */}
-        <div 
-          className="absolute left-[2%] lg:left-[5%] bottom-[18%] w-[230px] lg:w-[260px] p-5 rounded-2xl border border-zinc-800 bg-zinc-950/90 shadow-xl transition-all duration-300 hover:border-zinc-500 hover:shadow-[0_0_25px_rgba(255,255,255,0.05)] cursor-pointer"
-          style={{ transform: "translateZ(40px)" }}
-        >
-          <div className="flex items-center justify-between mb-2">
-            <span className="text-[11px] font-mono text-zinc-500">{education[0].year}</span>
-            <span className="text-[10px] px-2 py-0.5 rounded-full border border-zinc-800 bg-zinc-900 text-zinc-400">✓ Completed</span>
+          <div className="timeline-line">
+            <div className={`timeline-node ${edu.status === 'On-Going' ? 'node-ongoing' : 'node-completed'}`}>
+              {edu.status === 'On-Going' ? '⚡' : '✓'}
+            </div>
           </div>
-          <h3 className="text-base font-bold text-white mb-1">{education[0].school}</h3>
-          <p className="text-xs text-zinc-400 leading-relaxed">{education[0].desc}</p>
-        </div>
-
-        <div 
-          className="absolute right-[2%] lg:right-[5%] bottom-[32%] w-[230px] lg:w-[260px] p-5 rounded-2xl border border-zinc-800 bg-zinc-950/90 shadow-xl transition-all duration-300 hover:border-zinc-500 hover:shadow-[0_0_25px_rgba(255,255,255,0.05)] cursor-pointer"
-          style={{ transform: "translateZ(60px)" }}
-        >
-          <div className="flex items-center justify-between mb-2">
-            <span className="text-[11px] font-mono text-zinc-500">{education[1].year}</span>
-            <span className="text-[10px] px-2 py-0.5 rounded-full border border-zinc-800 bg-zinc-900 text-zinc-400">✓ Completed</span>
+          <div className={`timeline-content ${edu.status === 'On-Going' ? 'content-ongoing' : ''}`}>
+            <span className="timeline-year">{edu.year}</span>
+            <h3 className="timeline-school">{edu.school}</h3>
+            <p className="timeline-desc">{edu.desc}</p>
+            <span className={`timeline-status ${edu.status === 'On-Going' ? 'status-ongoing' : 'status-completed'}`}>
+              {edu.status}
+            </span>
           </div>
-          <h3 className="text-base font-bold text-white mb-1">{education[1].school}</h3>
-          <p className="text-xs text-zinc-400 leading-relaxed">{education[1].desc}</p>
-        </div>
-
-        <div 
-          className="absolute left-[2%] lg:left-[5%] top-[30%] w-[230px] lg:w-[260px] p-5 rounded-2xl border border-zinc-800 bg-zinc-950/90 shadow-xl transition-all duration-300 hover:border-zinc-500 hover:shadow-[0_0_25px_rgba(255,255,255,0.05)] cursor-pointer"
-          style={{ transform: "translateZ(80px)" }}
-        >
-          <div className="flex items-center justify-between mb-2">
-            <span className="text-[11px] font-mono text-zinc-500">{education[2].year}</span>
-            <span className="text-[10px] px-2 py-0.5 rounded-full border border-zinc-800 bg-zinc-900 text-zinc-400">✓ Completed</span>
-          </div>
-          <h3 className="text-base font-bold text-white mb-1">{education[2].school}</h3>
-          <p className="text-xs text-zinc-400 leading-relaxed">{education[2].desc}</p>
-        </div>
-
-        <div 
-          className="absolute right-[2%] lg:right-[5%] top-[12%] w-[230px] lg:w-[260px] p-5 rounded-2xl border border-zinc-500 bg-zinc-950/90 shadow-2xl transition-all duration-300 hover:border-blue-500 hover:shadow-[0_0_30px_rgba(0,102,255,0.15)] cursor-pointer ring-1 ring-blue-900/30"
-          style={{ transform: "translateZ(100px)" }}
-        >
-          <div className="flex items-center justify-between mb-2">
-            <span className="text-[11px] font-mono text-blue-400 font-semibold">{education[3].year}</span>
-            <span className="text-[10px] px-2.5 py-0.5 rounded-full border border-blue-900/50 bg-blue-950/50 text-blue-300 animate-pulse">⚡ On-Going</span>
-          </div>
-          <h3 className="text-base font-bold text-white mb-1">{education[3].school}</h3>
-          <p className="text-xs text-zinc-400 leading-relaxed">{education[3].desc}</p>
-        </div>
-      </motion.div>
+        </motion.div>
+      ))}
     </div>
   )
 }
@@ -469,7 +329,7 @@ function About() {
             <h2 className="section-title">Academic Journey</h2>
           </motion.div>
           
-          <AcademicTree3D />
+          <AcademicTimeline />
         </motion.div>
       </div>
     </section>
@@ -560,7 +420,7 @@ Generate complete, production-ready replacement code for the following three fil
    - Refactor the CTA "Connect with me" button. Give it a significantly larger size, a clean glassmorphic transparent style, premium padding, and custom hover transitions that feel proportional and solid.
 2. **`src/App.jsx`**:
    - Re-implement the `Counter` statistics component to run with zero glitches.
-   - Completely rewrite the `AcademicTree3D` SVG coordinates and markup. The SVG tree must be organic, resembling a hand-drawn, dry/skeletal, leafless "XXXTentacion Tree of Life / Poison Tree" (uneven winding branches, splits, irregular root curves). Make sure the floating milestone cards are beautifully styled and tilt on mousemove.
+   - Completely rewrite the academic timeline. The academic timeline must be a clean, minimalist flat vertical timeline (NOT a 3D timeline, and NOT an organic tree or cybernetic SVG trace). It should consist of a simple vertical connector line, pulsing completion node status badges, and flat information cards.
 3. **`src/App.css`**:
-   - Add any styling rules necessary for the new larger transparent button, the 3D perspective wrapper, and the skeletal tree layout. Keep the class naming clean and clean.
+   - Add any styling rules necessary for the new larger transparent button and the flat vertical timeline. Keep the class naming clean and clean.
 ```

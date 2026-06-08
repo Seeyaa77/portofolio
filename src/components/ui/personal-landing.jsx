@@ -27,7 +27,7 @@ const HeroSection = () => {
           <span className="hero-connect-btn-bg" />
           <span className="hero-connect-btn-border" />
           <span className="hero-connect-btn-content">
-            <span>Get in Touch</span>
+            <span>Connect with me</span>
             <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
               <path d="M5 12h14" />
               <path d="m12 5 7 7-7 7" />
