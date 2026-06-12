@@ -17,7 +17,8 @@ import {
   Music,
   MessageSquare,
   Bot,
-  Cpu
+  Cpu,
+  Share2
 } from 'lucide-react'
 import './App.css'
 
@@ -444,6 +445,8 @@ function BootScreen({ onComplete }) {
     { text: "[ OK ] Repo target: spotydl.net [Online]", delay: 50 },
     { text: "[ OK ] Syncing repository: 'Aura-AI' (https://github.com/Seeyaa77/Aura-AI)", delay: 80 },
     { text: "[ OK ] Repo target: aura-ai-six-alpha.vercel.app [Online]", delay: 50 },
+    { text: "[ OK ] Syncing repository: 'KodingIn' (https://github.com/seeyaa77/KodingIn)", delay: 80 },
+    { text: "[ OK ] Repo target: kodingin.neroism.my.id [Online]", delay: 50 },
     { text: "[ OK ] Syncing repository: 'dracin-bot' [Private Access Approved]", delay: 80 },
     { text: "[ OK ] Syncing repository: 'portofolio' (https://github.com/Seeyaa77/portofolio)", delay: 50 },
     { text: "[ INFO ] Allocating resources & compiling responsive stylesheets...", delay: 120 },
@@ -630,6 +633,14 @@ function TiltCard({ children }) {
 // Projects Section
 function Projects() {
   const projects = [
+    {
+      title: "KodingIn",
+      description: "Platform media sharing khusus developer untuk berbagi proyek, diskusi Q&A, tutorial, dan meme coding.",
+      tech: ["Next.js", "React", "Supabase", "Tailwind CSS", "Resend"],
+      repo: "https://github.com/seeyaa77/KodingIn",
+      live: "https://kodingin.neroism.my.id",
+      icon: <Share2 size={20} />
+    },
     {
       title: "Spotify Downloader",
       description: "Sleek and automated web tool to download Spotify playlists, albums, and tracks with high-fidelity meta-tagging and cover art retrieval.",
