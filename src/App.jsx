@@ -18,7 +18,8 @@ import {
   MessageSquare,
   Bot,
   Cpu,
-  Share2
+  Share2,
+  Search
 } from 'lucide-react'
 import './App.css'
 
@@ -448,6 +449,7 @@ function BootScreen({ onComplete }) {
     { text: "[ OK ] Syncing repository: 'KodingIn' (https://github.com/seeyaa77/KodingIn)", delay: 80 },
     { text: "[ OK ] Repo target: kodingin.neroism.my.id [Online]", delay: 50 },
     { text: "[ OK ] Syncing repository: 'dracin-bot' [Private Access Approved]", delay: 80 },
+    { text: "[ OK ] Syncing repository: 'Github-Searcher-13' (https://github.com/Curzyori/Github-Searcher-13) [Collab]", delay: 80 },
     { text: "[ OK ] Syncing repository: 'portofolio' (https://github.com/Seeyaa77/portofolio)", delay: 50 },
     { text: "[ INFO ] Allocating resources & compiling responsive stylesheets...", delay: 120 },
     { text: "[ OK ] Custom 3D Tilt motiongraphy drivers loaded.", delay: 80 },
@@ -666,6 +668,16 @@ function Projects() {
       icon: <Bot size={20} />
     },
     {
+      title: "Github Searcher (13)",
+      description: "Async Python CLI tool with a dual-engine architecture: Auto Pilot (browser session scraping) & Fast Skip (GitHub API token). Built for large-scale code scanning and repository search, bypassing conventional rate limits.",
+      tech: ["Python", "asyncio", "aiohttp", "GitHub API", "Web Scraping"],
+      repo: "https://github.com/Curzyori/Github-Searcher-13",
+      live: null,
+      icon: <Search size={20} />,
+      collab: true,
+      collaborators: ["@Curzyori", "@Seeyaa77"]
+    },
+    {
       title: "Portfolio Site",
       description: "This personal portfolio showcasing automation engineering, custom CLI animations, and premium web design aesthetics.",
       tech: ["React", "Vite", "Framer Motion", "Tailwind CSS"],
@@ -735,10 +747,17 @@ function Projects() {
                           <span>Live</span>
                         </a>
                       )}
+
+                      {project.collab && (
+                        <div className="project-badge-collab" title={project.collaborators?.join(' & ')}>
+                          <Github size={12} />
+                          <span>Collab</span>
+                        </div>
+                      )}
                     </div>
                   </div>
                   <div className="project-card-tech-brackets">
-                    {project.repo ? "[SYS.ONLINE]" : "[SYS.PRIVATE]"}
+                    {project.collab ? "[SYS.COLLAB]" : project.repo ? "[SYS.ONLINE]" : "[SYS.PRIVATE]"}
                   </div>
                 </TiltCard>
               </motion.div>
