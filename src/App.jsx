@@ -23,13 +23,13 @@ import {
 } from 'lucide-react'
 import './App.css'
 
-// Animation variants
+// Animation variants — snappier for neobrutalism
 const fadeInUp = {
-  hidden: { opacity: 0, y: 30 },
+  hidden: { opacity: 0, y: 20 },
   visible: { 
     opacity: 1, 
     y: 0,
-    transition: { duration: 0.6, ease: "easeOut" }
+    transition: { duration: 0.35, ease: "easeOut" }
   }
 }
 
@@ -37,16 +37,16 @@ const staggerContainer = {
   hidden: { opacity: 0 },
   visible: {
     opacity: 1,
-    transition: { staggerChildren: 0.1 }
+    transition: { staggerChildren: 0.08 }
   }
 }
 
 const scaleIn = {
-  hidden: { opacity: 0, scale: 0.8 },
+  hidden: { opacity: 0, y: 15 },
   visible: { 
     opacity: 1, 
-    scale: 1,
-    transition: { duration: 0.5 }
+    y: 0,
+    transition: { duration: 0.3 }
   }
 }
 
@@ -72,12 +72,13 @@ function Navbar() {
     <motion.nav
       initial={{ y: -100 }}
       animate={{ y: 0 }}
+      transition={{ duration: 0.3 }}
       className={`navbar ${isScrolled ? 'navbar-scrolled' : ''}`}
     >
       <div className="navbar-container">
-        <motion.a href="#" className="navbar-logo" whileHover={{ scale: 1.05 }}>
-          raffli<span style={{ opacity: 0.5 }}>.dev</span>
-        </motion.a>
+        <a href="#" className="navbar-logo">
+          raffli<span style={{ opacity: 0.4 }}>.dev</span>
+        </a>
 
         <div className="navbar-links">
           {navLinks.map((link) => (
@@ -120,68 +121,7 @@ function Navbar() {
   )
 }
 
-// Hero Section
-function Hero() {
-  return (
-    <section className="hero">
-      <div className="hero-bg"></div>
-      <div className="hero-content">
-        <motion.div
-          initial="hidden"
-          animate="visible"
-          variants={staggerContainer}
-        >
-          <motion.p variants={fadeInUp} className="hero-subtitle">
-            Automation Engineer
-          </motion.p>
-          
-          <motion.h1 variants={fadeInUp} className="hero-title">
-            Muhammad Raffli
-            <span className="hero-title-dim">Aldiansyah</span>
-          </motion.h1>
-          
-          <motion.p variants={fadeInUp} className="hero-description">
-            Crafting intelligent automation systems that transform complex workflows
-            into seamless, efficient processes.
-          </motion.p>
-          
-          <motion.div variants={fadeInUp} className="hero-buttons">
-            <a href="#projects" className="btn-primary">View Projects</a>
-            <a href="#contact" className="btn-secondary">Get in Touch</a>
-          </motion.div>
-          
-          <motion.div variants={fadeInUp} className="hero-socials">
-            <a href="https://github.com/seeyaa77" target="_blank" rel="noopener noreferrer">
-              <Github size={22} />
-            </a>
-            <a href="https://linkedin.com" target="_blank" rel="noopener noreferrer">
-              <Linkedin size={22} />
-            </a>
-            <a href="mailto:contact@example.com">
-              <Mail size={22} />
-            </a>
-          </motion.div>
-        </motion.div>
-        
-        <motion.div
-          initial={{ opacity: 0 }}
-          animate={{ opacity: 1 }}
-          transition={{ delay: 1.5 }}
-          className="hero-scroll"
-        >
-          <motion.div
-            animate={{ y: [0, 10, 0] }}
-            transition={{ duration: 2, repeat: Infinity }}
-          >
-            <ChevronDown size={28} />
-          </motion.div>
-        </motion.div>
-      </div>
-    </section>
-  )
-}
-
-// Counter component — smooth animated count-up using requestAnimationFrame
+// Counter component
 function Counter({ value, duration = 2 }) {
   const [display, setDisplay] = useState("0")
   const ref = useRef(null)
@@ -209,13 +149,12 @@ function Counter({ value, duration = 2 }) {
   }, [])
 
   const startCount = () => {
-    // Handle special case "24/7"
     if (value === "24/7") {
       const startTime = performance.now()
       const animate = (now) => {
         const elapsed = now - startTime
         const progress = Math.min(elapsed / (duration * 1000), 1)
-        const eased = 1 - Math.pow(1 - progress, 3) // ease-out cubic
+        const eased = 1 - Math.pow(1 - progress, 3)
         const current = Math.round(eased * 24)
         setDisplay(`${current}/7`)
         if (progress < 1) {
@@ -249,7 +188,7 @@ function Counter({ value, duration = 2 }) {
   return <span ref={ref}>{display}</span>
 }
 
-// Clean & Elegant Academic Timeline Component
+// Academic Timeline
 function AcademicTimeline() {
   const education = [
     { year: "2014 – 2020", school: "SDN 04 Pontianak Timur", status: "Completed", desc: "Pendidikan dasar di Pontianak Timur." },
@@ -302,7 +241,7 @@ function About() {
         <motion.div
           initial="hidden"
           whileInView="visible"
-          viewport={{ once: true, margin: "-100px" }}
+          viewport={{ once: true, margin: "-80px" }}
           variants={staggerContainer}
           className="about-grid"
         >
@@ -348,7 +287,7 @@ function About() {
         <motion.div
           initial="hidden"
           whileInView="visible"
-          viewport={{ once: true, margin: "-100px" }}
+          viewport={{ once: true, margin: "-80px" }}
           variants={staggerContainer}
           className="education-section"
         >
@@ -363,9 +302,6 @@ function About() {
     </section>
   )
 }
-
-
-
 
 // Skills Section
 function Skills() {
@@ -393,7 +329,7 @@ function Skills() {
         <motion.div
           initial="hidden"
           whileInView="visible"
-          viewport={{ once: true, margin: "-100px" }}
+          viewport={{ once: true, margin: "-80px" }}
           variants={staggerContainer}
         >
           <motion.div variants={fadeInUp} className="section-header">
@@ -422,11 +358,10 @@ function Skills() {
   )
 }
 
-// Linux CLI Boot Screen Component
-// Linux CLI Boot Screen Component
+// Boot Screen Component
 function BootScreen({ onComplete }) {
   const [logs, setLogs] = useState([])
-  const [currentLine, setCurrentLine] = useState(-1) // Start at -1, meaning typing is in progress
+  const [currentLine, setCurrentLine] = useState(-1)
   const [typedCommand, setTypedCommand] = useState("")
   const [showCursor, setShowCursor] = useState(true)
   const [progress, setProgress] = useState(0)
@@ -452,13 +387,12 @@ function BootScreen({ onComplete }) {
     { text: "[ OK ] Syncing repository: 'Github-Searcher-13' (https://github.com/Curzyori/Github-Searcher-13) [Collab]", delay: 80 },
     { text: "[ OK ] Syncing repository: 'portofolio' (https://github.com/Seeyaa77/portofolio)", delay: 50 },
     { text: "[ INFO ] Allocating resources & compiling responsive stylesheets...", delay: 120 },
-    { text: "[ OK ] Custom 3D Tilt motiongraphy drivers loaded.", delay: 80 },
-    { text: "[ OK ] Glassmorphism UI tokens successfully mapped.", delay: 50 },
+    { text: "[ OK ] Neobrutalism UI tokens loaded.", delay: 80 },
+    { text: "[ OK ] Hard shadow engine initialized.", delay: 50 },
     { text: "[ SUCCESS ] Web-shell terminal execution finished.", delay: 100 },
     { text: "[ READY ] Systems operational. Redirecting to Graphical Interface...", delay: 150 }
   ]
 
-  // Cursor blinking
   useEffect(() => {
     const interval = setInterval(() => {
       setShowCursor(prev => !prev)
@@ -466,15 +400,13 @@ function BootScreen({ onComplete }) {
     return () => clearInterval(interval)
   }, [])
 
-  // Typing effect - character by character slicing
   useEffect(() => {
     if (typedCommand.length < command.length) {
       const timeout = setTimeout(() => {
         setTypedCommand(command.slice(0, typedCommand.length + 1))
-      }, 25) // typing speed
+      }, 25)
       return () => clearTimeout(timeout)
     } else {
-      // Start printing logs after a small delay once typing is finished
       const timeout = setTimeout(() => {
         setCurrentLine(0)
       }, 150)
@@ -482,7 +414,6 @@ function BootScreen({ onComplete }) {
     }
   }, [typedCommand])
 
-  // Sequential log printer
   useEffect(() => {
     if (currentLine === -1 || currentLine >= logSequence.length) return
 
@@ -496,10 +427,8 @@ function BootScreen({ onComplete }) {
     return () => clearTimeout(timeout)
   }, [currentLine])
 
-  // Instant trigger to close once completed
   useEffect(() => {
     if (currentLine === logSequence.length) {
-      // Delay 100ms so the user sees the progress bar hit 100% and then immediately close
       const timeout = setTimeout(() => {
         onComplete()
       }, 100)
@@ -507,11 +436,8 @@ function BootScreen({ onComplete }) {
     }
   }, [currentLine, onComplete])
 
-  // Skip keyboard listener
   useEffect(() => {
-    const handleKeyDown = () => {
-      onComplete()
-    }
+    const handleKeyDown = () => { onComplete() }
     window.addEventListener("keydown", handleKeyDown)
     return () => window.removeEventListener("keydown", handleKeyDown)
   }, [onComplete])
@@ -570,69 +496,7 @@ function BootScreen({ onComplete }) {
   )
 }
 
-// 3D Tilt Card Component
-function TiltCard({ children }) {
-  const [rotateX, setRotateX] = useState(0)
-  const [rotateY, setRotateY] = useState(0)
-  const [scale, setScale] = useState(1)
-  const [glowX, setGlowX] = useState(50)
-  const [glowY, setGlowY] = useState(50)
-
-  const handleMouseMove = (e) => {
-    const card = e.currentTarget
-    const rect = card.getBoundingClientRect()
-    const x = e.clientX - rect.left
-    const y = e.clientY - rect.top
-    
-    const xc = rect.width / 2
-    const yc = rect.height / 2
-    const px = (x - xc) / xc
-    const py = (y - yc) / yc
-
-    const maxTilt = 8 // Subtle but noticeable 3D tilt
-    setRotateX(-py * maxTilt)
-    setRotateY(px * maxTilt)
-    setScale(1.02)
-    
-    setGlowX((x / rect.width) * 100)
-    setGlowY((y / rect.height) * 100)
-  }
-
-  const handleMouseLeave = () => {
-    setRotateX(0)
-    setRotateY(0)
-    setScale(1)
-  }
-
-  return (
-    <motion.div
-      onMouseMove={handleMouseMove}
-      onMouseLeave={handleMouseLeave}
-      style={{
-        transformStyle: 'preserve-3d',
-        perspective: 1000,
-        height: '100%'
-      }}
-      animate={{
-        rotateX: rotateX,
-        rotateY: rotateY,
-        scale: scale,
-      }}
-      transition={{ type: 'spring', stiffness: 200, damping: 15 }}
-      className="project-card-wrapper"
-    >
-      {children}
-      <div 
-        className="card-glare" 
-        style={{
-          background: `radial-gradient(circle at ${glowX}% ${glowY}%, rgba(255, 255, 255, 0.06) 0%, transparent 60%)`
-        }}
-      />
-    </motion.div>
-  )
-}
-
-// Projects Section
+// Projects Section — no TiltCard, flat neobrutalism cards
 function Projects() {
   const projects = [
     {
@@ -663,13 +527,13 @@ function Projects() {
       title: "Dracin Bot",
       description: "High-performance Telegram automated bot for fetching, indexing, and downloading/streaming Chinese dramas (Dracin) with custom search.",
       tech: ["Python", "Scrapy", "Telegram API", "MongoDB"],
-      repo: null, // Private repo
+      repo: null,
       live: null,
       icon: <Bot size={20} />
     },
     {
       title: "Github Searcher (13)",
-      description: "Async Python CLI tool with a dual-engine architecture: Auto Pilot (browser session scraping) & Fast Skip (GitHub API token). Built for large-scale code scanning and repository search, bypassing conventional rate limits.",
+      description: "Async Python CLI tool with a dual-engine architecture: Auto Pilot (browser session scraping) & Fast Skip (GitHub API token).",
       tech: ["Python", "asyncio", "aiohttp", "GitHub API", "Web Scraping"],
       repo: "https://github.com/Curzyori/Github-Searcher-13",
       live: null,
@@ -679,7 +543,7 @@ function Projects() {
     },
     {
       title: "Portfolio Site",
-      description: "This personal portfolio showcasing automation engineering, custom CLI animations, and premium web design aesthetics.",
+      description: "This personal portfolio showcasing automation engineering, custom CLI animations, and neobrutalism web design.",
       tech: ["React", "Vite", "Framer Motion", "Tailwind CSS"],
       repo: "https://github.com/Seeyaa77/portofolio",
       live: "#",
@@ -693,7 +557,7 @@ function Projects() {
         <motion.div
           initial="hidden"
           whileInView="visible"
-          viewport={{ once: true, margin: "-100px" }}
+          viewport={{ once: true, margin: "-80px" }}
           variants={staggerContainer}
         >
           <motion.div variants={fadeInUp} className="section-header">
@@ -708,58 +572,51 @@ function Projects() {
           <div className="projects-grid">
             {projects.map((project, index) => (
               <motion.div key={index} variants={scaleIn} style={{ height: '100%' }}>
-                <TiltCard>
-                  <div className="project-card-bg"></div>
-                  <div className="project-card-glow"></div>
-                  <div className="project-card">
-                    <div>
-                      <div className="project-header">
-                        <div className="project-title-wrapper">
-                          <div className="project-icon-box">{project.icon}</div>
-                          <h3 className="project-title">{project.title}</h3>
-                        </div>
-                        <ArrowUpRight size={18} className="project-arrow" />
+                <div className="project-card">
+                  <div>
+                    <div className="project-header">
+                      <div className="project-title-wrapper">
+                        <div className="project-icon-box">{project.icon}</div>
+                        <h3 className="project-title">{project.title}</h3>
                       </div>
-                      <p className="project-description">{project.description}</p>
-                      <div className="project-tags">
-                        {project.tech.map((tech, i) => (
-                          <span key={i} className="project-tag">{tech}</span>
-                        ))}
-                      </div>
+                      <ArrowUpRight size={18} className="project-arrow" />
                     </div>
+                    <p className="project-description">{project.description}</p>
+                    <div className="project-tags">
+                      {project.tech.map((tech, i) => (
+                        <span key={i} className="project-tag">{tech}</span>
+                      ))}
+                    </div>
+                  </div>
+                  
+                  <div className="project-badges">
+                    {project.repo ? (
+                      <a href={project.repo} target="_blank" rel="noopener noreferrer" className="project-badge-link">
+                        <Github size={12} />
+                        <span>Code</span>
+                      </a>
+                    ) : (
+                      <div className="project-badge-private">
+                        <Lock size={12} />
+                        <span>Private</span>
+                      </div>
+                    )}
                     
-                    <div className="project-badges">
-                      {project.repo ? (
-                        <a href={project.repo} target="_blank" rel="noopener noreferrer" className="project-badge-link">
-                          <Github size={12} />
-                          <span>Code</span>
-                        </a>
-                      ) : (
-                        <div className="project-badge-private">
-                          <Lock size={12} />
-                          <span>Private</span>
-                        </div>
-                      )}
-                      
-                      {project.live && project.live !== "#" && (
-                        <a href={project.live} target="_blank" rel="noopener noreferrer" className="project-badge-link">
-                          <ExternalLink size={12} />
-                          <span>Live</span>
-                        </a>
-                      )}
+                    {project.live && project.live !== "#" && (
+                      <a href={project.live} target="_blank" rel="noopener noreferrer" className="project-badge-link">
+                        <ExternalLink size={12} />
+                        <span>Live</span>
+                      </a>
+                    )}
 
-                      {project.collab && (
-                        <div className="project-badge-collab" title={project.collaborators?.join(' & ')}>
-                          <Github size={12} />
-                          <span>Collab</span>
-                        </div>
-                      )}
-                    </div>
+                    {project.collab && (
+                      <div className="project-badge-collab" title={project.collaborators?.join(' & ')}>
+                        <Github size={12} />
+                        <span>Collab</span>
+                      </div>
+                    )}
                   </div>
-                  <div className="project-card-tech-brackets">
-                    {project.collab ? "[SYS.COLLAB]" : project.repo ? "[SYS.ONLINE]" : "[SYS.PRIVATE]"}
-                  </div>
-                </TiltCard>
+                </div>
               </motion.div>
             ))}
           </div>
@@ -777,7 +634,7 @@ function Contact() {
         <motion.div
           initial="hidden"
           whileInView="visible"
-          viewport={{ once: true, margin: "-100px" }}
+          viewport={{ once: true, margin: "-80px" }}
           variants={staggerContainer}
           className="contact-content"
         >
@@ -851,7 +708,7 @@ function App() {
             key="bootscreen"
             initial={{ opacity: 1 }}
             exit={{ opacity: 0, y: -40 }}
-            transition={{ duration: 0.5, ease: "easeInOut" }}
+            transition={{ duration: 0.4 }}
             style={{ position: 'fixed', inset: 0, zIndex: 99999 }}
           >
             <BootScreen onComplete={handleBootComplete} />
