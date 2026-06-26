@@ -1,15 +1,4 @@
-@import url('https://fonts.googleapis.com/css2?family=DM+Sans:ital,opsz,wght@0,9..40,300;0,9..40,400;0,9..40,500;0,9..40,600;0,9..40,700;0,9..40,800;0,9..40,900;1,9..40,400&family=Space+Mono:wght@400;700&display=swap');
-
-@import "tailwindcss";
-
-@source "../index.html";
-@source "./**/*.{js,jsx,ts,tsx}";
-
-@theme {
-  --font-sans: 'DM Sans', system-ui, sans-serif;
-  --font-mono: 'Space Mono', monospace;
-}
-
+/* Base styles - minimal reset */
 * {
   margin: 0;
   padding: 0;
@@ -21,33 +10,5 @@ html {
 }
 
 body {
-  font-family: 'DM Sans', system-ui, sans-serif;
-  background-color: #e0d4c8;
-  color: #000000;
   overflow-x: hidden;
-}
-
-/* Custom scrollbar — neobrutalism */
-::-webkit-scrollbar {
-  width: 12px;
-}
-
-::-webkit-scrollbar-track {
-  background: #e0d4c8;
-  border-left: 3px solid #000;
-}
-
-::-webkit-scrollbar-thumb {
-  background: #000;
-  border: 2px solid #e0d4c8;
-}
-
-::-webkit-scrollbar-thumb:hover {
-  background: #333;
-}
-
-/* Selection */
-::selection {
-  background: #A6FAFF;
-  color: #000;
 }
