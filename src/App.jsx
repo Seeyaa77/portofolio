@@ -218,7 +218,7 @@ function Navbar() {
       <motion.nav className={`navbar ${scrolled ? 'navbar-scrolled' : ''}`}
         initial={{ y: -80, opacity: 0 }} animate={{ y: 0, opacity: 1 }} transition={{ duration: 0.6, ease: [0.22, 1, 0.36, 1] }}>
         <a href="#hero" className="navbar-logo" onClick={(e) => { e.preventDefault(); go('hero') }}>
-          raffli<span>.dev</span>
+          raflialdiansyah<span>.com</span>
         </a>
         <div className="navbar-links">
           {navItems.map((item) => (
@@ -502,7 +502,7 @@ function Footer() {
       <div className="container">
         <div className="footer-content">
           <div>
-            <div className="footer-logo">raffli<span>.dev</span></div>
+            <div className="footer-logo">raflialdiansyah<span>.com</span></div>
             <div className="footer-note">Automation Developer & Web Engineer</div>
           </div>
           <div className="footer-links">
