@@ -9,265 +9,243 @@ import {
   Zap,
   ExternalLink,
   Lock,
+  Gamepad2,
+  MessageCircle,
   Music,
   MessageSquare,
   Bot,
   Cpu,
   Share2,
   Search,
-  HardDrive,
+  Server,
   FileCode2,
   ArrowRight,
-  ChevronRight,
+  ArrowUpRight,
+  Menu,
+  X,
   Sparkles,
-  ChevronDown
 } from 'lucide-react'
 import './App.css'
 
-// ===== COUNTER COMPONENT =====
-function Counter({ value, duration = 2 }) {
-  const [display, setDisplay] = useState("0")
+// ===== COUNTER =====
+function Counter({ value, duration = 1.6 }) {
+  const [display, setDisplay] = useState('0')
   const ref = useRef(null)
   const hasStarted = useRef(false)
 
   useEffect(() => {
+    const animate = (target, suffix) => {
+      const start = performance.now()
+      const step = (now) => {
+        const p = Math.min((now - start) / (duration * 1000), 1)
+        const eased = 1 - Math.pow(1 - p, 3)
+        setDisplay(`${Math.round(eased * target)}${suffix}`)
+        if (p < 1) requestAnimationFrame(step)
+      }
+      requestAnimationFrame(step)
+    }
+
+    const run = () => {
+      if (value === '24/7') { animate(24, '/7'); return }
+      const match = value.match(/^(\d+)(.*)$/)
+      if (!match) { setDisplay(value); return }
+      animate(parseInt(match[1], 10), match[2])
+    }
+
+    const node = ref.current
     const observer = new IntersectionObserver(
       ([entry]) => {
         if (entry.isIntersecting && !hasStarted.current) {
           hasStarted.current = true
-          startCount()
+          run()
           observer.disconnect()
         }
       },
       { threshold: 0.5 }
     )
-    if (ref.current) observer.observe(ref.current)
+    if (node) observer.observe(node)
     return () => observer.disconnect()
-  }, [])
-
-  const startCount = () => {
-    if (value === "24/7") {
-      const startTime = performance.now()
-      const animate = (now) => {
-        const elapsed = now - startTime
-        const progress = Math.min(elapsed / (duration * 1000), 1)
-        const eased = 1 - Math.pow(1 - progress, 3)
-        const current = Math.round(eased * 24)
-        setDisplay(`${current}/7`)
-        if (progress < 1) requestAnimationFrame(animate)
-      }
-      requestAnimationFrame(animate)
-      return
-    }
-
-    const match = value.match(/^(\d+)(.*)$/)
-    if (!match) { setDisplay(value); return }
-
-    const target = parseInt(match[1], 10)
-    const suffix = match[2]
-    const startTime = performance.now()
-
-    const animate = (now) => {
-      const elapsed = now - startTime
-      const progress = Math.min(elapsed / (duration * 1000), 1)
-      const eased = 1 - Math.pow(1 - progress, 3)
-      const current = Math.round(eased * target)
-      setDisplay(`${current}${suffix}`)
-      if (progress < 1) requestAnimationFrame(animate)
-    }
-    requestAnimationFrame(animate)
-  }
+  }, [value, duration])
 
   return <span ref={ref}>{display}</span>
 }
 
 // ===== DATA =====
 const stats = [
-  { number: "80+", label: "Projects Delivered" },
-  { number: "3+", label: "Years of Experience" },
-  { number: "5+", label: "Tech Stacks" },
-  { number: "24/7", label: "Automation Uptime" },
+  { number: '80+', label: 'Projects Built' },
+  { number: '5+', label: 'Years Coding' },
+  { number: '6+', label: 'Tech Stacks' },
+  { number: '24/7', label: 'Automation Uptime' },
 ]
 
 const education = [
-  { year: "2014 – 2020", school: "SDN 04 Pontianak Timur", status: "Completed", desc: "Pendidikan dasar di Pontianak Timur." },
-  { year: "2020 – 2023", school: "SMPN 26 Pontianak Timur", status: "Completed", desc: "Sekolah menengah pertama, mulai mendalami komputer." },
-  { year: "2023 – 2026", school: "SMKN 7 Pontianak Timur", status: "Completed", desc: "SMK — fokus Rekayasa Perangkat Lunak." },
-  { year: "2026 – Present", school: "Bina Sarana Informatika", status: "On-Going", desc: "Studi di bidang Teknologi Informasi." },
+  { year: '2014 – 2020', school: 'SDN 04 Pontianak Timur', status: 'Completed', desc: 'Pendidikan dasar di Pontianak Timur.' },
+  { year: '2020 – 2023', school: 'SMPN 26 Pontianak Timur', status: 'Completed', desc: 'Mulai mendalami komputer & pemrograman.' },
+  { year: '2023 – 2026', school: 'SMKN 7 Pontianak Timur', status: 'Completed', desc: 'Jurusan Rekayasa Perangkat Lunak.' },
+  { year: '2026 – Present', school: 'Bina Sarana Informatika', status: 'On-Going', desc: 'Studi di bidang Teknologi Informasi.' },
 ]
 
 const skills = [
-  {
-    category: 'Languages',
-    icon: <Code2 size={20} />,
-    color: 'var(--yellow)',
-    items: ['Python', 'JavaScript', 'TypeScript', 'Bash']
-  },
-  {
-    category: 'Frameworks',
-    icon: <FileCode2 size={20} />,
-    color: 'var(--cyan)',
-    items: ['Next.js', 'React', 'Node.js', 'Express', 'FastAPI']
-  },
-  {
-    category: 'Automation',
-    icon: <Zap size={20} />,
-    color: 'var(--pink)',
-    items: ['Selenium', 'Puppeteer', 'Playwright', 'Scrapy']
-  },
-  {
-    category: 'DevOps',
-    icon: <HardDrive size={20} />,
-    color: 'var(--green)',
-    items: ['Git', 'Docker', 'Linux', 'PostgreSQL']
-  },
+  { category: 'Languages', icon: <Code2 size={20} />, items: ['Python', 'JavaScript', 'TypeScript', 'Pawn', 'Bash'] },
+  { category: 'Frameworks', icon: <FileCode2 size={20} />, items: ['Next.js', 'React', 'Node.js', 'Express'] },
+  { category: 'Automation', icon: <Zap size={20} />, items: ['Puppeteer', 'Selenium', 'Playwright', 'Baileys'] },
+  { category: 'Infra', icon: <Server size={20} />, items: ['Git', 'Docker', 'Linux', 'PostgreSQL'] },
 ]
 
 const projects = [
   {
-    title: "KodingIn",
-    description: "Platform media sharing khusus developer untuk berbagi proyek, diskusi Q&A, tutorial, dan meme coding.",
-    tech: ["Next.js", "React", "Supabase", "Tailwind CSS", "Resend"],
-    repo: "https://github.com/seeyaa77/KodingIn",
-    live: "https://kodingin.neroism.my.id",
+    title: 'LZRP',
+    year: '2021 – 2022',
+    description:
+      'Gamemode SA-MP roleplay lengkap: sistem UCP via Discord, dynamic actor/door/locker/ATM, phone textdraws, anticheat, speedcam & speedtrap, sampai car stealing. Ditulis dengan Pawn di atas base script dan dikembangkan sendiri.',
+    tech: ['Pawn', 'SA-MP', 'C', 'JavaScript'],
+    repo: 'https://github.com/Seeyaa77/LZRP',
+    live: null,
+    icon: <Gamepad2 size={22} />,
+    featured: true,
+  },
+  {
+    title: 'Yaemiko Botz',
+    year: '2023',
+    description:
+      'Bot WhatsApp multifungsi berbasis Node.js dengan berbagai fitur otomasi dan command, siap deploy lewat Docker/Heroku (Procfile + Nix).',
+    tech: ['Node.js', 'JavaScript', 'Baileys', 'Docker'],
+    repo: 'https://github.com/Seeyaa77/Yaemiko-Botz',
+    live: null,
+    icon: <MessageCircle size={22} />,
+  },
+  {
+    title: 'KodingIn',
+    year: '2025',
+    description: 'Platform media sharing khusus developer untuk berbagi proyek, diskusi Q&A, tutorial, dan meme coding.',
+    tech: ['Next.js', 'React', 'Supabase', 'Tailwind'],
+    repo: 'https://github.com/seeyaa77/KodingIn',
+    live: 'https://kodingin.neroism.my.id',
     icon: <Share2 size={22} />,
-    featured: true
   },
   {
-    title: "Spotify Downloader",
-    description: "Automated web tool to download Spotify playlists, albums, and tracks with high-fidelity meta-tagging.",
-    tech: ["Node.js", "Vite", "Spotify API", "Tailwind CSS"],
-    repo: "https://github.com/Seeyaa77/Spotify-Downloader",
-    live: "https://spotydl.net/",
-    icon: <Music size={22} />
+    title: 'Spotify Downloader',
+    year: '2024',
+    description: 'Web tool otomatis untuk mengunduh playlist, album, dan track Spotify dengan meta-tagging hi-fi.',
+    tech: ['Node.js', 'Vite', 'Spotify API', 'Tailwind'],
+    repo: 'https://github.com/Seeyaa77/Spotify-Downloader',
+    live: 'https://spotydl.net/',
+    icon: <Music size={22} />,
   },
   {
-    title: "Aura AI",
-    description: "Premium AI chatbot UI with ChatGPT API, featuring context persistence and interactive message history.",
-    tech: ["React", "Express", "OpenAI API", "Framer Motion"],
-    repo: "https://github.com/Seeyaa77/Aura-AI",
-    live: "https://aura-ai-six-alpha.vercel.app/",
-    icon: <MessageSquare size={22} />
+    title: 'Aura AI',
+    year: '2024',
+    description: 'UI chatbot AI premium dengan ChatGPT API — context persistence dan riwayat percakapan interaktif.',
+    tech: ['React', 'Express', 'OpenAI API', 'Framer Motion'],
+    repo: 'https://github.com/Seeyaa77/Aura-AI',
+    live: 'https://aura-ai-six-alpha.vercel.app/',
+    icon: <MessageSquare size={22} />,
   },
   {
-    title: "Dracin Bot",
-    description: "High-performance Telegram bot for fetching, indexing, and streaming Chinese dramas with custom search.",
-    tech: ["Python", "Scrapy", "Telegram API", "MongoDB"],
+    title: 'Dracin Bot',
+    year: '2024',
+    description: 'Bot Telegram performa tinggi untuk fetch, index, dan streaming drama China dengan pencarian custom.',
+    tech: ['Python', 'Scrapy', 'Telegram API', 'MongoDB'],
     repo: null,
     live: null,
     icon: <Bot size={22} />,
-    private: true
+    private: true,
   },
   {
-    title: "Github Searcher (13)",
-    description: "Async Python CLI tool with dual-engine: Auto Pilot (browser scraping) & Fast Skip (GitHub API).",
-    tech: ["Python", "asyncio", "aiohttp", "GitHub API"],
-    repo: "https://github.com/Curzyori/Github-Searcher-13",
+    title: 'Github Searcher 13',
+    year: '2025',
+    description: 'Tool CLI Python async dual-engine: Auto Pilot (browser scraping) & Fast Skip (GitHub API).',
+    tech: ['Python', 'asyncio', 'aiohttp', 'GitHub API'],
+    repo: 'https://github.com/Curzyori/Github-Searcher-13',
     live: null,
     icon: <Search size={22} />,
-    collab: true
   },
   {
-    title: "Portfolio",
-    description: "This personal portfolio showcasing automation engineering and neobrutalism web design.",
-    tech: ["React", "Vite", "Framer Motion", "CSS"],
-    repo: "https://github.com/Seeyaa77/portofolio",
-    live: "#",
-    icon: <Cpu size={22} />
+    title: 'This Portfolio',
+    year: '2026',
+    description: 'Portofolio personal — minimalism berpadu glassmorphism, dibangun dengan React & Framer Motion.',
+    tech: ['React', 'Vite', 'Framer Motion', 'CSS'],
+    repo: 'https://github.com/Seeyaa77/portofolio',
+    live: null,
+    icon: <Cpu size={22} />,
   },
 ]
 
-// ===== FLOATING ELEMENTS =====
-const FloatingStar = ({ size = 24, color, top, left, right, bottom, delay = 0 }) => (
-  <motion.div
-    style={{ position: 'absolute', top, left, right, bottom, zIndex: 0, pointerEvents: 'none' }}
-    animate={{ scale: [1, 1.2, 1], rotate: [0, 360], y: [0, -15, 0] }}
-    transition={{ duration: 4 + delay, repeat: Infinity, delay, ease: "easeInOut" }}
-  >
-    <svg width={size} height={size} viewBox="0 0 24 24" fill={color} stroke="#000" strokeWidth="2">
-      <path d="M12 2L14.5 9H22L16 13.5L18 21L12 17L6 21L8 13.5L2 9H9.5L12 2Z" />
-    </svg>
-  </motion.div>
-)
+const socials = [
+  { icon: <Github size={18} />, href: 'https://github.com/seeyaa77', label: 'GitHub' },
+  { icon: <Linkedin size={18} />, href: 'https://linkedin.com', label: 'LinkedIn' },
+  { icon: <Mail size={18} />, href: 'mailto:contact@example.com', label: 'Email' },
+]
 
-const FloatingShape = ({ type, size, color, top, left, right, bottom, delay = 0, rotate }) => (
-  <motion.div
-    style={{
-      position: 'absolute', top, left, right, bottom,
-      width: size, height: type === 'circle' ? size : size * 0.6,
-      background: color, border: '3px solid #000', zIndex: 0, pointerEvents: 'none',
-      borderRadius: type === 'circle' ? '50%' : type === 'diamond' ? 0 : 0,
-      transform: type === 'diamond' ? 'rotate(45deg)' : `rotate(${rotate || 0}deg)`,
-    }}
-    animate={{ y: [0, -20, 0], rotate: [rotate || 0, (rotate || 0) + 10, rotate || 0], scale: [1, 1.05, 1] }}
-    transition={{ duration: 5 + delay, repeat: Infinity, delay, ease: "easeInOut" }}
-  />
-)
+const navItems = ['About', 'Skills', 'Projects', 'Contact']
+
+// ===== MOTION PRESETS =====
+const fadeUp = {
+  hidden: { opacity: 0, y: 24 },
+  show: { opacity: 1, y: 0, transition: { duration: 0.6, ease: [0.22, 1, 0.36, 1] } },
+}
+
+// ===== BACKGROUND =====
+function Ambient() {
+  return (
+    <div className="bg-ambient" aria-hidden="true">
+      <motion.div className="bg-blob bg-blob-1" animate={{ x: [0, 40, 0], y: [0, 30, 0] }} transition={{ duration: 18, repeat: Infinity, ease: 'easeInOut' }} />
+      <motion.div className="bg-blob bg-blob-2" animate={{ x: [0, -50, 0], y: [0, 40, 0] }} transition={{ duration: 22, repeat: Infinity, ease: 'easeInOut' }} />
+      <motion.div className="bg-blob bg-blob-3" animate={{ x: [0, 30, 0], y: [0, -30, 0] }} transition={{ duration: 20, repeat: Infinity, ease: 'easeInOut' }} />
+      <div className="bg-grid" />
+    </div>
+  )
+}
 
 // ===== NAVBAR =====
 function Navbar() {
-  const [isScrolled, setIsScrolled] = useState(false)
-  const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false)
+  const [scrolled, setScrolled] = useState(false)
+  const [open, setOpen] = useState(false)
 
   useEffect(() => {
-    const handleScroll = () => setIsScrolled(window.scrollY > 50)
-    window.addEventListener('scroll', handleScroll)
-    return () => window.removeEventListener('scroll', handleScroll)
+    const onScroll = () => setScrolled(window.scrollY > 40)
+    window.addEventListener('scroll', onScroll)
+    return () => window.removeEventListener('scroll', onScroll)
   }, [])
 
-  const scrollTo = (id) => {
+  const go = (id) => {
     document.getElementById(id)?.scrollIntoView({ behavior: 'smooth' })
-    setIsMobileMenuOpen(false)
+    setOpen(false)
   }
 
   return (
-    <motion.nav
-      className={`navbar ${isScrolled ? 'navbar-scrolled' : ''}`}
-      initial={{ y: -100 }}
-      animate={{ y: 0 }}
-      transition={{ duration: 0.5, type: 'spring' }}
-    >
-      <div className="navbar-container">
-        <motion.a href="#" className="navbar-logo" onClick={(e) => { e.preventDefault(); scrollTo('hero') }}
-          whileHover={{ scale: 1.05 }} whileTap={{ scale: 0.95 }}>
+    <>
+      <motion.nav className={`navbar ${scrolled ? 'navbar-scrolled' : ''}`}
+        initial={{ y: -80, opacity: 0 }} animate={{ y: 0, opacity: 1 }} transition={{ duration: 0.6, ease: [0.22, 1, 0.36, 1] }}>
+        <a href="#hero" className="navbar-logo" onClick={(e) => { e.preventDefault(); go('hero') }}>
           raffli<span>.dev</span>
-        </motion.a>
-
+        </a>
         <div className="navbar-links">
-          {['About', 'Skills', 'Projects', 'Contact'].map((item, i) => (
-            <motion.a key={item} href={`#${item.toLowerCase()}`} className="navbar-link"
-              onClick={(e) => { e.preventDefault(); scrollTo(item.toLowerCase()) }}
-              whileHover={{ y: -3, boxShadow: '5px 5px 0 #000' }}
-              whileTap={{ scale: 0.95 }}
-              initial={{ opacity: 0, y: -20 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ delay: i * 0.1 }}>
+          {navItems.map((item) => (
+            <a key={item} href={`#${item.toLowerCase()}`} className="navbar-link"
+              onClick={(e) => { e.preventDefault(); go(item.toLowerCase()) }}>
               {item}
-            </motion.a>
+            </a>
           ))}
         </div>
-
-        <button className="navbar-toggle" onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}>
-          {isMobileMenuOpen ? <Terminal size={20} /> : <Terminal size={20} />}
+        <a href="#contact" className="navbar-cta" onClick={(e) => { e.preventDefault(); go('contact') }}>Let&apos;s Talk</a>
+        <button className="navbar-toggle" onClick={() => setOpen(!open)} aria-label="Menu">
+          {open ? <X size={20} /> : <Menu size={20} />}
         </button>
-      </div>
+      </motion.nav>
 
       <AnimatePresence>
-        {isMobileMenuOpen && (
-          <motion.div className="navbar-mobile-menu open"
-            initial={{ opacity: 0, height: 0 }}
-            animate={{ opacity: 1, height: 'auto' }}
-            exit={{ opacity: 0, height: 0 }}>
-            {['About', 'Skills', 'Projects', 'Contact'].map((item) => (
-              <a key={item} href={`#${item.toLowerCase()}`} className="navbar-mobile-link"
-                onClick={(e) => { e.preventDefault(); scrollTo(item.toLowerCase()) }}>
-                {item}
-              </a>
+        {open && (
+          <motion.div className="navbar-mobile"
+            initial={{ opacity: 0, y: -12 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0, y: -12 }} transition={{ duration: 0.25 }}>
+            {[...navItems, 'Contact'].filter((v, i, a) => a.indexOf(v) === i).map((item) => (
+              <a key={item} href={`#${item.toLowerCase()}`}
+                onClick={(e) => { e.preventDefault(); go(item.toLowerCase()) }}>{item}</a>
             ))}
           </motion.div>
         )}
       </AnimatePresence>
-    </motion.nav>
+    </>
   )
 }
 
@@ -275,87 +253,56 @@ function Navbar() {
 function Hero() {
   return (
     <section id="hero" className="hero">
-      <FloatingStar size={32} color="#FFE500" top="15%" left="5%" delay={0} />
-      <FloatingStar size={24} color="#00D4FF" top="25%" right="8%" delay={0.5} />
-      <FloatingStar size={28} color="#FF6B9D" bottom="25%" left="10%" delay={1} />
-      <FloatingStar size={20} color="#00E676" top="40%" right="15%" delay={1.5} />
-      <FloatingStar size={36} color="#FFE500" bottom="30%" right="5%" delay={2} />
-
-      <FloatingShape type="square" size={60} color="#00D4FF" top="10%" right="20%" delay={0.3} rotate={15} />
-      <FloatingShape type="circle" size={40} color="#FF6B9D" bottom="25%" left="15%" delay={0.8} />
-      <FloatingShape type="diamond" size={30} color="#FFE500" top="35%" left="20%" delay={1.2} />
-
-      <div className="hero-content">
+      <div className="container">
         <div className="hero-grid">
-          <motion.div className="hero-left"
-            initial={{ opacity: 0, x: -50 }}
-            animate={{ opacity: 1, x: 0 }}
-            transition={{ duration: 0.6 }}>
-
-            <motion.div className="hero-badge"
-              initial={{ opacity: 0, scale: 0.8 }}
-              animate={{ opacity: 1, scale: 1 }}
-              transition={{ delay: 0.2, type: 'spring' }}
-              whileHover={{ scale: 1.05, rotate: -2 }}>
-              <Sparkles size={14} /> Available for Projects
+          <motion.div initial="hidden" animate="show" variants={{ show: { transition: { staggerChildren: 0.12 } } }}>
+            <motion.div className="hero-status" variants={fadeUp}>
+              <span className="hero-status-dot" /> Available for freelance & collaboration
             </motion.div>
-
-            <h1 className="hero-title">
-              <motion.span className="hero-title-line" initial={{ opacity: 0, y: 50 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.3 }}>Muhammad</motion.span>
-              <motion.span className="hero-title-line" initial={{ opacity: 0, y: 50 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.4 }}>Raffli</motion.span>
-              <motion.span className="hero-title-line hero-title-outline" initial={{ opacity: 0, y: 50 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.5 }}>Aldiansyah</motion.span>
-            </h1>
-
-            <motion.p className="hero-description" initial={{ opacity: 0 }} animate={{ opacity: 1 }} transition={{ delay: 0.6 }}>
-              Automation-focused developer specializing in web scraping, bot development, and system orchestration. Building robust pipelines that run 24/7.
+            <motion.h1 className="hero-title" variants={fadeUp}>
+              Muhammad Raffli<br />
+              <span className="grad">Aldiansyah</span>
+            </motion.h1>
+            <motion.p className="hero-desc" variants={fadeUp}>
+              Automation-focused developer dari Pontianak. Bikin bot, web scraper, dan
+              full-stack apps — dari gamemode SA-MP sampai pipeline yang jalan 24/7.
             </motion.p>
-
-            <motion.div className="hero-buttons" initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.7 }}>
-              <motion.a href="#contact" className="btn btn-primary"
-                onClick={(e) => { e.preventDefault(); document.getElementById('contact').scrollIntoView({ behavior: 'smooth' }) }}
-                whileHover={{ scale: 1.05, x: 5, y: 5, boxShadow: '10px 10px 0 #000' }}
-                whileTap={{ scale: 0.95 }}>
+            <motion.div className="hero-buttons" variants={fadeUp}>
+              <a href="#projects" className="btn btn-primary" onClick={(e) => { e.preventDefault(); document.getElementById('projects').scrollIntoView({ behavior: 'smooth' }) }}>
+                View Work <ArrowRight size={16} />
+              </a>
+              <a href="#contact" className="btn btn-ghost" onClick={(e) => { e.preventDefault(); document.getElementById('contact').scrollIntoView({ behavior: 'smooth' }) }}>
                 <Mail size={16} /> Get in Touch
-              </motion.a>
-              <motion.a href="#projects" className="btn btn-secondary"
-                onClick={(e) => { e.preventDefault(); document.getElementById('projects').scrollIntoView({ behavior: 'smooth' }) }}
-                whileHover={{ scale: 1.05, x: 5, y: 5, background: 'var(--yellow)', boxShadow: '10px 10px 0 #000' }}
-                whileTap={{ scale: 0.95 }}>
-                View Projects <ArrowRight size={16} />
-              </motion.a>
+              </a>
+            </motion.div>
+            <motion.div className="hero-social" variants={fadeUp}>
+              {socials.map((s) => (
+                <a key={s.label} href={s.href} target="_blank" rel="noopener noreferrer" aria-label={s.label}>{s.icon}</a>
+              ))}
             </motion.div>
           </motion.div>
 
-          <motion.div className="hero-right" initial={{ opacity: 0, scale: 0.8 }} animate={{ opacity: 1, scale: 1 }} transition={{ delay: 0.4 }}>
-            <motion.div className="hero-image-wrapper" animate={{ y: [0, -10, 0] }} transition={{ duration: 3, repeat: Infinity }}>
-              <motion.div className="hero-image-deco hero-image-deco-1" animate={{ rotate: [0, 5, 0] }} transition={{ duration: 4, repeat: Infinity }} />
-              <motion.div className="hero-image-deco hero-image-deco-2" animate={{ rotate: [0, -5, 0] }} transition={{ duration: 5, repeat: Infinity }} />
-              <motion.img src="/ryoasuka.jfif" alt="Raffli" className="hero-image" whileHover={{ scale: 1.05, rotate: 2 }} />
+          <motion.div className="hero-visual"
+            initial={{ opacity: 0, scale: 0.94 }} animate={{ opacity: 1, scale: 1 }} transition={{ duration: 0.7, ease: [0.22, 1, 0.36, 1] }}>
+            <motion.div className="hero-card" animate={{ y: [0, -12, 0] }} transition={{ duration: 6, repeat: Infinity, ease: 'easeInOut' }}>
+              <img src="/ryoasuka.jfif" alt="Raffli" className="hero-photo" />
+              <div className="hero-card-meta">
+                <div>
+                  <div className="hero-card-name">Raffli</div>
+                  <div className="hero-card-role">Automation Developer</div>
+                </div>
+                <span className="hero-card-badge">@seeyaa77</span>
+              </div>
+            </motion.div>
+            <motion.div className="hero-float hero-float-1"
+              animate={{ y: [0, -10, 0] }} transition={{ duration: 4, repeat: Infinity, ease: 'easeInOut' }}>
+              <Terminal size={14} /> 24/7 uptime
+            </motion.div>
+            <motion.div className="hero-float hero-float-2"
+              animate={{ y: [0, 10, 0] }} transition={{ duration: 5, repeat: Infinity, ease: 'easeInOut' }}>
+              <Sparkles size={14} /> 80+ projects
             </motion.div>
           </motion.div>
-        </div>
-
-        <motion.div className="scroll-indicator" animate={{ y: [0, 10, 0] }} transition={{ duration: 1.5, repeat: Infinity }}>
-          <ChevronDown size={24} />
-        </motion.div>
-      </div>
-
-      <div className="marquee-banner">
-        <div className="marquee-track">
-          {[...Array(2)].map((_, i) => (
-            <div key={i} className="marquee-content">
-              <span><Zap size={16} /> Web Scraping</span>
-              <span className="divider-dot">•</span>
-              <span><Terminal size={16} /> Bot Development</span>
-              <span className="divider-dot">•</span>
-              <span><Code2 size={16} /> Python & JavaScript</span>
-              <span className="divider-dot">•</span>
-              <span><Zap size={16} /> Automation 24/7</span>
-              <span className="divider-dot">•</span>
-              <span><Sparkles size={16} /> API Integration</span>
-              <span className="divider-dot">•</span>
-            </div>
-          ))}
         </div>
       </div>
     </section>
@@ -365,86 +312,69 @@ function Hero() {
 // ===== ABOUT =====
 function About() {
   return (
-    <section id="about" className="about section">
-      <FloatingShape type="circle" size={80} color="var(--yellow)" top="10%" right="5%" delay={0.5} />
-      <FloatingShape type="square" size={50} color="var(--cyan)" bottom="15%" left="3%" delay={1} />
-
+    <section id="about" className="section">
       <div className="container">
-        <div className="about-top-grid">
-          <motion.div initial={{ opacity: 0, x: -60 }} whileInView={{ opacity: 1, x: 0 }} viewport={{ once: true }} transition={{ duration: 0.6 }}>
-            <motion.span className="badge badge-green mb-4" whileHover={{ scale: 1.1, rotate: -2 }}>About</motion.span>
-            <h2 className="about-heading">Engineering automation that drives results</h2>
-            <div className="about-text">
-              <p>
-                I'm Raffli — a self-taught automation engineer based in <strong>Pontianak Timur, Indonesia</strong>.
-                What started as a hobby quickly evolved into a passion for building
-                scalable systems that eliminate repetitive tasks and optimize workflows.
-              </p>
-              <p>
-                My expertise spans across Python and JavaScript ecosystems, with deep
-                knowledge in Node.js architecture. Having delivered 20+ production-ready
-                automation solutions, I've mastered web scraping at scale, API orchestration,
-                and end-to-end workflow automation.
-              </p>
-            </div>
-            <div className="hobbies">
-              <p className="hobbies-label">Interests</p>
-              <div className="hobbies-tags">
-                {['Gaming', 'Coding', 'Security'].map((hobby, i) => (
-                  <motion.span key={i} className="hobby-tag" whileHover={{ scale: 1.1, y: -5, background: 'var(--black)', color: 'var(--white)', boxShadow: '5px 5px 0 var(--yellow)' }}>
-                    {hobby}
-                  </motion.span>
+        <motion.div className="section-header" initial="hidden" whileInView="show" viewport={{ once: true }} variants={fadeUp}>
+          <span className="eyebrow"><span className="eyebrow-dot" /> About</span>
+          <h2>Building automation that quietly does the work</h2>
+          <p>Self-taught developer yang suka menyederhanakan hal-hal berulang jadi sistem yang jalan sendiri.</p>
+        </motion.div>
+
+        <div className="about-grid">
+          <motion.div className="about-text" initial="hidden" whileInView="show" viewport={{ once: true }} variants={fadeUp}>
+            <p>
+              Halo, saya <strong>Raffli</strong> — developer berbasis di <strong>Pontianak, Indonesia</strong>.
+              Perjalanan ngoding saya mulai dari nge-mod server game <strong>SA-MP</strong> tahun 2021,
+              nulis gamemode roleplay pakai Pawn, sampai akhirnya jatuh cinta ke otomasi dan web development.
+            </p>
+            <p>
+              Sekarang fokus saya di ekosistem <strong>Python & JavaScript</strong>: bikin bot, web scraper,
+              dan aplikasi full-stack. Saya suka arsitektur yang rapi, sistem yang stabil, dan tampilan
+              yang bersih tanpa berlebihan.
+            </p>
+            <div className="about-interests">
+              <div className="about-interests-label">Interests</div>
+              <div className="chips">
+                {['Gaming', 'Automation', 'Web Dev', 'Security', 'Bots'].map((c) => (
+                  <span key={c} className="chip">{c}</span>
                 ))}
               </div>
             </div>
           </motion.div>
 
-          <motion.div className="stats-grid" initial={{ opacity: 0, x: 60 }} whileInView={{ opacity: 1, x: 0 }} viewport={{ once: true }} transition={{ duration: 0.6 }}>
-            {stats.map((stat, i) => (
-              <motion.div key={i} className="stat-card" whileHover={{ y: -8, boxShadow: '10px 10px 0 #000' }} initial={{ opacity: 0, scale: 0.8 }} whileInView={{ opacity: 1, scale: 1 }} viewport={{ once: true }} transition={{ delay: i * 0.1 }}>
-                <p className="stat-number"><Counter value={stat.number} /></p>
-                <p className="stat-label">{stat.label}</p>
+          <motion.div className="stats-col" initial="hidden" whileInView="show" viewport={{ once: true }}
+            variants={{ show: { transition: { staggerChildren: 0.1 } } }}>
+            {stats.map((s) => (
+              <motion.div key={s.label} className="stat-card" variants={fadeUp}>
+                <div className="stat-number"><Counter value={s.number} /></div>
+                <div className="stat-label">{s.label}</div>
               </motion.div>
             ))}
           </motion.div>
         </div>
 
-        {/* Education Timeline */}
-        <motion.div className="education-section" initial={{ opacity: 0, y: 40 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true }} transition={{ duration: 0.6 }}>
-          <div className="section-header">
-            <motion.span className="badge badge-cyan mb-4" whileHover={{ scale: 1.1 }}>Education</motion.span>
-            <h2 className="display-md">Academic Journey</h2>
-          </div>
-
+        {/* Education */}
+        <div style={{ marginTop: 90 }}>
+          <motion.div className="section-header center" initial="hidden" whileInView="show" viewport={{ once: true }} variants={fadeUp}>
+            <span className="eyebrow" style={{ margin: '0 auto' }}><span className="eyebrow-dot" /> Education</span>
+            <h2>Academic Journey</h2>
+          </motion.div>
           <div className="timeline">
             {education.map((edu, i) => (
-              <motion.div key={i} className="timeline-row"
-                initial={{ opacity: 0, x: -30 }}
-                whileInView={{ opacity: 1, x: 0 }}
-                viewport={{ once: true }}
-                transition={{ delay: i * 0.15 }}
-                whileHover={{ x: 10 }}>
-                <div className="timeline-left">
-                  <motion.div className={`timeline-node ${edu.status === 'On-Going' ? 'node-active' : ''}`}
-                    animate={edu.status === 'On-Going' ? { scale: [1, 1.1, 1] } : {}}
-                    transition={{ duration: 2, repeat: Infinity }}>
-                    {edu.status === 'On-Going' ? '⚡' : '✓'}
-                  </motion.div>
-                  {i < education.length - 1 && <div className="timeline-line" />}
-                </div>
-                <motion.div className={`timeline-content ${edu.status === 'On-Going' ? 'content-active' : ''}`}
-                  whileHover={{ y: -5, boxShadow: '10px 10px 0 #000' }}>
+              <motion.div key={i} className="timeline-item"
+                initial={{ opacity: 0, x: -20 }} whileInView={{ opacity: 1, x: 0 }} viewport={{ once: true }}
+                transition={{ delay: i * 0.1, duration: 0.5, ease: [0.22, 1, 0.36, 1] }}>
+                <span className={`timeline-dot ${edu.status === 'On-Going' ? 'active' : ''}`} />
+                <div className="timeline-card">
                   <span className="timeline-year">{edu.year}</span>
                   <h3 className="timeline-school">{edu.school}</h3>
                   <p className="timeline-desc">{edu.desc}</p>
-                  <span className={`timeline-status ${edu.status === 'On-Going' ? 'status-active' : 'status-done'}`}>
-                    {edu.status}
-                  </span>
-                </motion.div>
+                  <span className={`timeline-badge ${edu.status === 'On-Going' ? 'ongoing' : 'done'}`}>{edu.status}</span>
+                </div>
               </motion.div>
             ))}
           </div>
-        </motion.div>
+        </div>
       </div>
     </section>
   )
@@ -453,124 +383,86 @@ function About() {
 // ===== SKILLS =====
 function Skills() {
   return (
-    <section id="skills" className="skills section">
+    <section id="skills" className="section">
       <div className="container">
-        <motion.div className="section-header" initial={{ opacity: 0, y: 30 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true }} transition={{ duration: 0.5 }}>
-          <motion.span className="badge badge-yellow mb-4" whileHover={{ scale: 1.1, rotate: 3 }}>Skills</motion.span>
-          <h1 className="display-lg">Tech Stack</h1>
-          <p>Technologies I use to build robust automation systems and web applications.</p>
+        <motion.div className="section-header" initial="hidden" whileInView="show" viewport={{ once: true }} variants={fadeUp}>
+          <span className="eyebrow"><span className="eyebrow-dot" /> Skills</span>
+          <h2>Tech Stack</h2>
+          <p>Alat-alat yang saya pakai untuk membangun sistem otomasi dan aplikasi web.</p>
         </motion.div>
 
-        <div className="skills-grid">
-          {skills.map((skill, i) => (
-            <motion.div key={skill.category} className="skill-category" style={{ background: skill.color }}
-              initial={{ opacity: 0, y: 50, rotate: -3 }}
-              whileInView={{ opacity: 1, y: 0, rotate: 0 }}
-              viewport={{ once: true }}
-              transition={{ delay: i * 0.15, type: 'spring', stiffness: 100 }}
-              whileHover={{ y: -8, boxShadow: '12px 12px 0 #000', rotate: (i % 2 === 0 ? 1 : -1) }}>
-              <div className="skill-header">
-                <motion.div className="skill-icon" whileHover={{ rotate: 360 }} transition={{ duration: 0.5 }}>
-                  {skill.icon}
-                </motion.div>
-                <span className="skill-title">{skill.category}</span>
-              </div>
-              <div className="skill-tags">
-                {skill.items.map((item, j) => (
-                  <motion.span key={j} className="tag" whileHover={{ scale: 1.15, y: -3, background: 'var(--black)', color: 'var(--white)' }}>
-                    {item}
-                  </motion.span>
+        <motion.div className="skills-grid" initial="hidden" whileInView="show" viewport={{ once: true }}
+          variants={{ show: { transition: { staggerChildren: 0.08 } } }}>
+          {skills.map((skill) => (
+            <motion.div key={skill.category} className="skill-card" variants={fadeUp}>
+              <div className="skill-icon">{skill.icon}</div>
+              <div className="skill-title">{skill.category}</div>
+              <div className="skill-items">
+                {skill.items.map((item) => (
+                  <span key={item} className="skill-item">{item}</span>
                 ))}
               </div>
             </motion.div>
           ))}
-        </div>
+        </motion.div>
       </div>
     </section>
   )
 }
 
 // ===== PROJECTS =====
+function ProjectCard({ project }) {
+  const onMove = (e) => {
+    const r = e.currentTarget.getBoundingClientRect()
+    e.currentTarget.style.setProperty('--mx', `${e.clientX - r.left}px`)
+    e.currentTarget.style.setProperty('--my', `${e.clientY - r.top}px`)
+  }
+  return (
+    <motion.div className={`project-card ${project.featured ? 'featured' : ''}`} onMouseMove={onMove} variants={fadeUp}>
+      <div className="project-head">
+        <div className="project-icon">{project.icon}</div>
+        <div className="project-meta-badges">
+          {project.featured && <span className="tag-pill tag-featured">Featured</span>}
+          <span className="tag-pill tag-year">{project.year}</span>
+        </div>
+      </div>
+      <h3 className="project-title">{project.title}</h3>
+      <p className="project-desc">{project.description}</p>
+      <div className="project-tech">
+        {project.tech.map((t) => <span key={t}>{t}</span>)}
+      </div>
+      <div className="project-links">
+        {project.repo ? (
+          <a href={project.repo} target="_blank" rel="noopener noreferrer" className="project-link primary">
+            <Github size={15} /> Code
+          </a>
+        ) : (
+          <span className="project-link muted"><Lock size={15} /> Private</span>
+        )}
+        {project.live && (
+          <a href={project.live} target="_blank" rel="noopener noreferrer" className="project-link">
+            <ExternalLink size={15} /> Live Demo
+          </a>
+        )}
+      </div>
+    </motion.div>
+  )
+}
+
 function Projects() {
   return (
-    <section id="projects" className="projects section">
-      <FloatingStar size={28} color="var(--yellow)" top="5%" right="10%" delay={0.5} />
-      <FloatingStar size={20} color="var(--cyan)" bottom="10%" left="5%" delay={1.2} />
-
+    <section id="projects" className="section">
       <div className="container">
-        <motion.div className="section-header" initial={{ opacity: 0, y: 30 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true }} transition={{ duration: 0.5 }}>
-          <motion.span className="badge badge-pink mb-4" whileHover={{ scale: 1.1, rotate: -3 }}>Portfolio</motion.span>
-          <h1 className="display-lg">Featured Work</h1>
-          <p>Production-ready automation solutions and applications directly synced and live on GitHub.</p>
+        <motion.div className="section-header" initial="hidden" whileInView="show" viewport={{ once: true }} variants={fadeUp}>
+          <span className="eyebrow"><span className="eyebrow-dot" /> Projects</span>
+          <h2>Selected Work</h2>
+          <p>Dari gamemode SA-MP di 2021 sampai aplikasi web modern — beberapa hal yang pernah saya bangun.</p>
         </motion.div>
 
-        <div className="projects-grid">
-          {projects.map((project, i) => (
-            <motion.div key={project.title} className="project-card"
-              initial={{ opacity: 0, y: 60, rotate: -2 }}
-              whileInView={{ opacity: 1, y: 0, rotate: 0 }}
-              viewport={{ once: true }}
-              transition={{ delay: i * 0.1, type: 'spring', stiffness: 100 }}
-              whileHover={{ y: -12, boxShadow: '15px 15px 0 #000', rotate: 1 }}>
-              <div className="project-top">
-                <div className="project-header">
-                  <div className="project-icon-box">
-                    <motion.div whileHover={{ rotate: 360 }} transition={{ duration: 0.5 }}>
-                      {project.icon}
-                    </motion.div>
-                  </div>
-                  {project.featured && <span className="featured-badge">Featured</span>}
-                </div>
-
-                <h3 className="project-title">{project.title}</h3>
-                <p className="project-description">{project.description}</p>
-              </div>
-
-              <div className="project-bottom">
-                <div className="project-tags">
-                  {project.tech.map((tech, j) => (
-                    <span key={j} className="project-tag">{tech}</span>
-                  ))}
-                </div>
-
-                <div className="project-badges">
-                  {project.repo ? (
-                    <motion.a href={project.repo} target="_blank" rel="noopener noreferrer" className="project-badge-link"
-                      whileHover={{ scale: 1.1, background: 'var(--cyan)' }}
-                      whileTap={{ scale: 0.9 }}>
-                      <Github size={12} /> Code
-                    </motion.a>
-                  ) : (
-                    <div className="project-badge-private">
-                      <Lock size={12} /> Private
-                    </div>
-                  )}
-
-                  {project.live && project.live !== "#" && (
-                    <motion.a href={project.live} target="_blank" rel="noopener noreferrer" className="project-badge-link"
-                      style={{ background: 'var(--green)' }}
-                      whileHover={{ scale: 1.1 }}
-                      whileTap={{ scale: 0.9 }}>
-                      <ExternalLink size={12} /> Live
-                    </motion.a>
-                  )}
-
-                  {project.collab && (
-                    <div className="project-badge-collab">
-                      <Github size={12} /> Collab
-                    </div>
-                  )}
-
-                  {project.private && (
-                    <div className="project-badge-private">
-                      <Lock size={12} /> Private
-                    </div>
-                  )}
-                </div>
-              </div>
-            </motion.div>
-          ))}
-        </div>
+        <motion.div className="projects-grid" initial="hidden" whileInView="show" viewport={{ once: true, margin: '-80px' }}
+          variants={{ show: { transition: { staggerChildren: 0.08 } } }}>
+          {projects.map((p) => <ProjectCard key={p.title} project={p} />)}
+        </motion.div>
       </div>
     </section>
   )
@@ -578,127 +470,26 @@ function Projects() {
 
 // ===== CONTACT =====
 function Contact() {
-  const [form, setForm] = useState({ name: '', email: '', subject: 'Automation Query', message: '' })
-  const [submitting, setSubmitting] = useState(false)
-  const [submitted, setSubmitted] = useState(false)
-
-  const handleSubmit = (e) => {
-    e.preventDefault()
-    setSubmitting(true)
-    setTimeout(() => {
-      setSubmitting(false)
-      setSubmitted(true)
-      setForm({ name: '', email: '', subject: 'Automation Query', message: '' })
-      setTimeout(() => setSubmitted(false), 3000)
-    }, 1500)
-  }
-
   return (
-    <section id="contact" className="contact section">
-      <FloatingShape type="circle" size={100} color="var(--yellow)" top="10%" left="-3%" delay={0.5} />
-      <FloatingStar size={32} color="var(--pink)" bottom="15%" right="8%" delay={1} />
-
+    <section id="contact" className="section">
       <div className="container">
-        <motion.div className="section-header" initial={{ opacity: 0, y: 30 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true }} transition={{ duration: 0.5 }}>
-          <motion.span className="badge badge-cyan mb-4" whileHover={{ scale: 1.1, rotate: 2 }}>Contact</motion.span>
-          <h1 className="display-lg">Let's Build Something</h1>
-          <p>Ready to automate your workflow? Let's discuss how I can help transform your processes.</p>
-        </motion.div>
-
-        <div className="contact-grid">
-          <motion.form initial={{ opacity: 0, x: -50 }} whileInView={{ opacity: 1, x: 0 }} viewport={{ once: true }} transition={{ duration: 0.6 }}
-            onSubmit={handleSubmit} className="contact-form" whileHover={{ boxShadow: '15px 15px 0 #000' }}>
-            <h2>Send a Message</h2>
-
-            {[{ name: 'name', placeholder: 'John Doe', type: 'text' }, { name: 'email', placeholder: 'john@company.com', type: 'email' }].map((field) => (
-              <motion.div key={field.name} className="form-group" whileFocusWithin={{ scale: 1.02 }}>
-                <label className="form-label">{field.name === 'name' ? 'Your Name' : 'Email Address'}</label>
-                <input type={field.type} className="form-input" placeholder={field.placeholder}
-                  value={form[field.name]} onChange={(e) => setForm({ ...form, [field.name]: e.target.value })} required />
-              </motion.div>
-            ))}
-
-            <div className="form-group">
-              <label className="form-label">Subject</label>
-              <select className="form-select" value={form.subject} onChange={(e) => setForm({ ...form, subject: e.target.value })}>
-                <option>Web Scraping / Automation</option>
-                <option>Telegram / Discord Bot</option>
-                <option>FullStack Web Application</option>
-                <option>General Hello</option>
-              </select>
-            </div>
-
-            <motion.div className="form-group" whileFocusWithin={{ scale: 1.02 }}>
-              <label className="form-label">Message</label>
-              <textarea className="form-textarea" placeholder="Tell me about your project..."
-                value={form.message} onChange={(e) => setForm({ ...form, message: e.target.value })} required />
-            </motion.div>
-
-            <motion.button type="submit" className="form-submit" disabled={submitting}
-              whileHover={{ scale: 1.02, x: 3, y: 3, boxShadow: '10px 10px 0 var(--yellow)', background: 'var(--white)', color: 'var(--black)' }}
-              whileTap={{ scale: 0.98 }}>
-              <AnimatePresence mode="wait">
-                {submitting ? (
-                  <motion.span key="loading" initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }}>Sending...</motion.span>
-                ) : submitted ? (
-                  <motion.span key="success" initial={{ opacity: 0, scale: 0.8 }} animate={{ opacity: 1, scale: 1 }} style={{ color: 'var(--green)' }}>
-                    Message Sent! ✓
-                  </motion.span>
-                ) : (
-                  <motion.span key="default" initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }} style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
-                    <Mail size={16} /> Send Message
-                  </motion.span>
-                )}
-              </AnimatePresence>
-            </motion.button>
-          </motion.form>
-
-          <motion.div className="contact-info" initial={{ opacity: 0, x: 50 }} whileInView={{ opacity: 1, x: 0 }} viewport={{ once: true }} transition={{ duration: 0.6, delay: 0.2 }}>
-            <motion.div className="contact-card" whileHover={{ y: -5, boxShadow: '10px 10px 0 #000' }}>
-              <h3>Connect</h3>
-              <div className="contact-links">
-                {[
-                  { icon: <Github size={18} />, label: 'GitHub Profile', href: 'https://github.com/seeyaa77' },
-                  { icon: <Linkedin size={18} />, label: 'LinkedIn', href: 'https://linkedin.com' },
-                  { icon: <Mail size={18} />, label: 'Email Direct', href: 'mailto:contact@example.com' },
-                ].map((link, i) => (
-                  <motion.a key={i} href={link.href} target="_blank" rel="noopener noreferrer" className="contact-link"
-                    initial={{ opacity: 0, x: 20 }} whileInView={{ opacity: 1, x: 0 }} viewport={{ once: true }} transition={{ delay: i * 0.1 }}
-                    whileHover={{ x: 10, background: 'var(--cyan)', boxShadow: '5px 5px 0 #000' }}
-                    whileTap={{ scale: 0.95 }}>
-                    {link.icon}
-                    {link.label}
-                    <ArrowRight size={14} style={{ marginLeft: 'auto' }} />
-                  </motion.a>
-                ))}
-              </div>
-            </motion.div>
-
-            <motion.div className="contact-cta" initial={{ opacity: 0, y: 30 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true }} transition={{ delay: 0.3 }}
-              whileHover={{ y: -5, boxShadow: '12px 12px 0 #000' }}>
-              <h3>Quick Response</h3>
-              <p>I typically respond within 24 hours.</p>
-              <motion.a href="mailto:contact@example.com" className="btn btn-primary" style={{ margin: '0 auto' }}
-                whileHover={{ scale: 1.1, rotate: 2 }} whileTap={{ scale: 0.95 }}>
+        <motion.div className="contact-wrap" initial={{ opacity: 0, y: 30 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true }} transition={{ duration: 0.6, ease: [0.22, 1, 0.36, 1] }}>
+          <div className="contact-inner">
+            <span className="eyebrow" style={{ margin: '0 auto' }}><span className="eyebrow-dot" /> Contact</span>
+            <h2 className="contact-title">Let&apos;s build something together</h2>
+            <p className="contact-desc">
+              Punya ide, proyek otomasi, atau butuh bantuan bikin bot? Kirim pesan — biasanya saya balas dalam 24 jam.
+            </p>
+            <div className="contact-actions">
+              <a href="mailto:contact@example.com" className="btn btn-primary">
                 <Mail size={16} /> Email Me
-              </motion.a>
-            </motion.div>
-
-            <motion.div className="contact-card" style={{ background: 'var(--green)' }}
-              initial={{ opacity: 0, scale: 0.8 }} whileInView={{ opacity: 1, scale: 1 }} viewport={{ once: true }}
-              whileHover={{ scale: 1.05, rotate: -1 }}>
-              <div style={{ display: 'flex', alignItems: 'center', gap: 12 }}>
-                <motion.div style={{ width: 12, height: 12, background: 'var(--white)', border: '2px solid #000', borderRadius: '50%' }}
-                  animate={{ scale: [1, 1.3, 1], opacity: [1, 0.7, 1] }}
-                  transition={{ duration: 1.5, repeat: Infinity }} />
-                <div>
-                  <div style={{ fontFamily: 'var(--font-mono)', fontSize: 12, fontWeight: 700, textTransform: 'uppercase' }}>Available for Projects</div>
-                  <div style={{ fontFamily: 'var(--font-mono)', fontSize: 11, opacity: 0.7 }}>Open to freelance & collaboration</div>
-                </div>
-              </div>
-            </motion.div>
-          </motion.div>
-        </div>
+              </a>
+              <a href="https://github.com/seeyaa77" target="_blank" rel="noopener noreferrer" className="btn btn-ghost">
+                <Github size={16} /> GitHub <ArrowUpRight size={15} />
+              </a>
+            </div>
+          </div>
+        </motion.div>
       </div>
     </section>
   )
@@ -709,37 +500,28 @@ function Footer() {
   return (
     <footer className="footer">
       <div className="container">
-        <motion.div className="footer-content" initial={{ opacity: 0 }} whileInView={{ opacity: 1 }} viewport={{ once: true }}>
+        <div className="footer-content">
           <div>
-            <motion.div className="footer-logo" whileHover={{ scale: 1.05 }}>raffli.dev</motion.div>
-            <div className="footer-text">Automation Developer & Web Engineer</div>
+            <div className="footer-logo">raffli<span>.dev</span></div>
+            <div className="footer-note">Automation Developer & Web Engineer</div>
           </div>
-
           <div className="footer-links">
-            {[
-              { icon: <Github size={18} />, href: 'https://github.com/seeyaa77' },
-              { icon: <Linkedin size={18} />, href: 'https://linkedin.com' },
-              { icon: <Mail size={18} />, href: 'mailto:contact@example.com' },
-            ].map((link, i) => (
-              <motion.a key={i} href={link.href} target="_blank" rel="noopener noreferrer" className="footer-link"
-                whileHover={{ y: -5, background: 'var(--yellow)', boxShadow: '3px 3px 0 #fff' }}
-                whileTap={{ scale: 0.9 }}>
-                {link.icon}
-              </motion.a>
+            {socials.map((s) => (
+              <a key={s.label} href={s.href} target="_blank" rel="noopener noreferrer" aria-label={s.label}>{s.icon}</a>
             ))}
           </div>
-
-          <div className="footer-text">© 2026 Muhammad Raffli Aldiansyah</div>
-        </motion.div>
+          <div className="footer-note">© 2026 Muhammad Raffli Aldiansyah</div>
+        </div>
       </div>
     </footer>
   )
 }
 
-// ===== MAIN APP =====
+// ===== APP =====
 function App() {
   return (
     <div className="app">
+      <Ambient />
       <Navbar />
       <main>
         <Hero />
