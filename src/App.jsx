@@ -116,7 +116,7 @@ const projects = [
   },
   {
     title: 'KodingIn',
-    year: '2025',
+    year: '2026',
     description: 'Platform media sharing khusus developer untuk berbagi proyek, diskusi Q&A, tutorial, dan meme coding.',
     tech: ['Next.js', 'React', 'Supabase', 'Tailwind'],
     repo: 'https://github.com/seeyaa77/KodingIn',
@@ -125,7 +125,7 @@ const projects = [
   },
   {
     title: 'Spotify Downloader',
-    year: '2024',
+    year: '2026',
     description: 'Web tool otomatis untuk mengunduh playlist, album, dan track Spotify dengan meta-tagging hi-fi.',
     tech: ['Node.js', 'Vite', 'Spotify API', 'Tailwind'],
     repo: 'https://github.com/Seeyaa77/Spotify-Downloader',
@@ -134,7 +134,7 @@ const projects = [
   },
   {
     title: 'Aura AI',
-    year: '2024',
+    year: '2026',
     description: 'UI chatbot AI premium dengan ChatGPT API — context persistence dan riwayat percakapan interaktif.',
     tech: ['React', 'Express', 'OpenAI API', 'Framer Motion'],
     repo: 'https://github.com/Seeyaa77/Aura-AI',
@@ -143,7 +143,7 @@ const projects = [
   },
   {
     title: 'Dracin Bot',
-    year: '2024',
+    year: '2026',
     description: 'Bot Telegram performa tinggi untuk fetch, index, dan streaming drama China dengan pencarian custom.',
     tech: ['Python', 'Scrapy', 'Telegram API', 'MongoDB'],
     repo: null,
@@ -153,7 +153,7 @@ const projects = [
   },
   {
     title: 'Github Searcher 13',
-    year: '2025',
+    year: '2026',
     description: 'Tool CLI Python async dual-engine: Auto Pilot (browser scraping) & Fast Skip (GitHub API).',
     tech: ['Python', 'asyncio', 'aiohttp', 'GitHub API'],
     repo: 'https://github.com/Curzyori/Github-Searcher-13',
@@ -192,6 +192,7 @@ function Ambient() {
       <motion.div className="bg-blob bg-blob-1" animate={{ x: [0, 40, 0], y: [0, 30, 0] }} transition={{ duration: 18, repeat: Infinity, ease: 'easeInOut' }} />
       <motion.div className="bg-blob bg-blob-2" animate={{ x: [0, -50, 0], y: [0, 40, 0] }} transition={{ duration: 22, repeat: Infinity, ease: 'easeInOut' }} />
       <motion.div className="bg-blob bg-blob-3" animate={{ x: [0, 30, 0], y: [0, -30, 0] }} transition={{ duration: 20, repeat: Infinity, ease: 'easeInOut' }} />
+      <motion.div className="bg-blob bg-blob-4" animate={{ x: [0, -25, 0], y: [0, 25, 0] }} transition={{ duration: 16, repeat: Infinity, ease: 'easeInOut' }} />
       <div className="bg-grid" />
     </div>
   )
