@@ -82,4 +82,4 @@ vercel --prod
 
 ---
 
-Designed and developed by **Muhammad Raffli Aldiansyah**.
+Designed and developed by **Muhammad Raffli Aldiansyah**
