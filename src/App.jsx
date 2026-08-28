@@ -518,11 +518,74 @@ function Footer() {
   )
 }
 
+// ===== GLASS CURSOR (desktop only) =====
+function GlassCursor() {
+  const ringRef = useRef(null)
+  const dotRef = useRef(null)
+
+  useEffect(() => {
+    if (!window.matchMedia('(pointer: fine)').matches) return
+    const ring = ringRef.current
+    const dot = dotRef.current
+    if (!ring || !dot) return
+
+    let mx = -100, my = -100, rx = -100, ry = -100
+    let raf = null
+
+    const loop = () => {
+      rx += (mx - rx) * 0.18
+      ry += (my - ry) * 0.18
+      ring.style.transform = `translate(${rx}px, ${ry}px) translate(-50%, -50%)`
+      if (Math.abs(mx - rx) > 0.1 || Math.abs(my - ry) > 0.1) {
+        raf = requestAnimationFrame(loop)
+      } else {
+        raf = null
+      }
+    }
+
+    const onMove = (e) => {
+      mx = e.clientX
+      my = e.clientY
+      dot.style.transform = `translate(${mx}px, ${my}px) translate(-50%, -50%)`
+      dot.classList.add('visible')
+      ring.classList.add('visible')
+      if (!raf) raf = requestAnimationFrame(loop)
+    }
+
+    const onOver = (e) => {
+      const interactive = e.target.closest('a, button, input, textarea, select, [role="button"]')
+      ring.classList.toggle('hovering', !!interactive)
+    }
+    const onLeave = () => {
+      ring.classList.remove('visible')
+      dot.classList.remove('visible')
+    }
+
+    window.addEventListener('mousemove', onMove, { passive: true })
+    window.addEventListener('mouseover', onOver, { passive: true })
+    document.documentElement.addEventListener('mouseleave', onLeave)
+    return () => {
+      window.removeEventListener('mousemove', onMove)
+      window.removeEventListener('mouseover', onOver)
+      document.documentElement.removeEventListener('mouseleave', onLeave)
+      if (raf) cancelAnimationFrame(raf)
+    }
+  }, [])
+
+  return (
+    <>
+      <div ref={ringRef} className="glass-cursor" aria-hidden="true" />
+      <div ref={dotRef} className="glass-cursor-dot" aria-hidden="true" />
+    </>
+  )
+}
+
 // ===== APP =====
 function App() {
   return (
     <div className="app">
       <Ambient />
+      <GlassCursor />
       <Navbar />
       <main>
         <Hero />
